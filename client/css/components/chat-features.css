@@ -1,0 +1,255 @@
+/* ========== STYLES POUR LES FONCTIONNALITÉS DU CHAT ========== */
+
+/* Styles pour les bulles vidéo */
+.video-sources-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.video-source-bubble {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideInUp 0.5s ease forwards;
+}
+
+.video-source-bubble:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8));
+}
+
+.video-source-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--colour-3);
+}
+
+.youtube-icon {
+  width: 20px;
+  height: 20px;
+  color: #ff0000;
+  flex-shrink: 0;
+}
+
+.video-source-url {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  word-break: break-all;
+}
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Styles pour les actions des messages */
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.copy-icon,
+.like-icon,
+.dislike-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background: transparent;
+}
+
+.copy-icon:hover,
+.like-icon:hover,
+.dislike-icon:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.copy-icon img,
+.like-icon img,
+.dislike-icon img {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.copy-icon:hover img,
+.like-icon:hover img,
+.dislike-icon:hover img {
+  opacity: 1;
+}
+
+.dynamic-warning {
+  font-size: 11px;
+  color: #888;
+  font-style: italic;
+  margin-left: auto;
+  font-weight: 400;
+}
+
+/* Styles pour le curseur de frappe */
+#cursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background-color: var(--colour-3);
+  margin-left: 2px;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Styles pour le streaming de texte */
+.loading-stream {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background-color: var(--colour-3);
+  margin-left: 2px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Styles pour les images d'assistant */
+.assistant-image {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  transition: all 0.5s ease;
+}
+
+.conversation_video {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  transition: all 0.5s ease;
+}
+
+/* Amélioration des messages */
+.message {
+  position: relative;
+}
+
+.message:last-child {
+  animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Styles pour les états de chargement */
+.message.loading .content::after {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid var(--colour-3);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive pour les fonctionnalités du chat */
+@media screen and (max-width: 768px) {
+  .video-source-bubble {
+    padding: 12px;
+  }
+  
+  .video-source-title {
+    font-size: 14px;
+  }
+  
+  .youtube-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .actions {
+    gap: 6px;
+  }
+  
+  .copy-icon,
+  .like-icon,
+  .dislike-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .dynamic-warning {
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .video-sources-container {
+    gap: 8px;
+  }
+  
+  .video-source-bubble {
+    padding: 10px;
+  }
+  
+  .video-source-title {
+    font-size: 13px;
+    gap: 8px;
+  }
+  
+  .video-source-url {
+    font-size: 11px;
+  }
+}

@@ -44,99 +44,17 @@ hljs.addPlugin(new CopyButtonPlugin());
 document.getElementsByClassName("library-side-nav-content")[0].innerHTML =
   onBoardingContent();
 
-// FONCTION CORRIGÉE pour redimensionner dynamiquement le textarea et la barre de chat
+// Les fonctions de redimensionnement sont maintenant gérées par ChatInputManager
+// Fonctions de compatibilité maintenues pour l'ancien code
 function resizeTextarea(textarea) {
-  // Sauvegarder la position de scroll
-  const scrollTop = textarea.scrollTop;
-  
-  // Reset height pour calculer la nouvelle hauteur
-  textarea.style.height = 'auto';
-  
-  // Calculer la hauteur nécessaire basée sur le contenu
-  const scrollHeight = textarea.scrollHeight;
-  const minHeight = 40; // Hauteur pour une ligne
-  const maxHeight = 200; // Hauteur maximale avant scroll
-  const lineHeight = 20; // Hauteur approximative d'une ligne
-  
-  // Calculer la nouvelle hauteur ligne par ligne
-  let newHeight;
-  if (scrollHeight <= minHeight) {
-    newHeight = minHeight;
-  } else if (scrollHeight >= maxHeight) {
-    newHeight = maxHeight;
-    // Activer le scroll interne si nécessaire
-    textarea.classList.add('scrollable');
-  } else {
-    // Arrondir à la ligne la plus proche
-    const lines = Math.ceil((scrollHeight - minHeight) / lineHeight) + 1;
-    newHeight = minHeight + (lines - 1) * lineHeight;
-    textarea.classList.remove('scrollable');
-  }
-  
-  // Appliquer la nouvelle hauteur avec transition fluide
-  textarea.style.height = newHeight + 'px';
-  
-  // Ajuster la hauteur du conteneur input-box
-  const inputBox = textarea.closest('.input-box');
-  if (inputBox) {
-    const boxHeight = Math.max(newHeight + 20, 60);
-    inputBox.style.height = boxHeight + 'px';
-    
-    // Calculer l'offset pour le bouton "Arrêtez la génération"
-    const heightDifference = boxHeight - 60; // 60 est la hauteur minimale
-    document.documentElement.style.setProperty('--chat-height-offset', `${heightDifference}px`);
-    
-    // Ajuster la zone de messages pour éviter le chevauchement
-    const messagesContainer = document.getElementById('messages');
-    if (messagesContainer) {
-      if (heightDifference > 0) {
-        messagesContainer.classList.add('expanded-input');
-        messagesContainer.style.paddingBottom = `${120 + heightDifference}px`;
-      } else {
-        messagesContainer.classList.remove('expanded-input');
-        messagesContainer.style.paddingBottom = '120px';
-      }
-    }
-  }
-  
-  // Restaurer la position de scroll si nécessaire
-  if (textarea.classList.contains('scrollable')) {
-    textarea.scrollTop = scrollTop;
+  if (window.chatInputManager && window.chatInputManager.isInitialized) {
+    window.chatInputManager.resizeTextarea();
   }
 }
 
-// Fonction pour réinitialiser la hauteur de la barre de chat
 function resetChatBarHeight() {
-  const textarea = document.getElementById('message-input');
-  const inputBox = document.querySelector('.input-box');
-  const messagesContainer = document.getElementById('messages');
-  
-  if (textarea) {
-    textarea.style.height = '40px';
-    textarea.classList.remove('scrollable');
-  }
-  
-  if (inputBox) {
-    inputBox.style.height = '60px';
-  }
-  
-  // Reset de l'offset pour le bouton "Arrêtez la génération"
-  document.documentElement.style.setProperty('--chat-height-offset', '0px');
-  
-  if (messagesContainer) {
-    messagesContainer.classList.remove('expanded-input');
-    messagesContainer.style.paddingBottom = '120px';
-  }
-}
-
-// Fonction pour ajuster automatiquement la hauteur lors de la suppression de texte
-function handleTextDeletion(textarea) {
-  // Vérifier si le contenu a diminué
-  const currentHeight = parseInt(textarea.style.height);
-  const scrollHeight = textarea.scrollHeight;
-  
-  if (scrollHeight < currentHeight) {
-    resizeTextarea(textarea);
+  if (window.chatInputManager && window.chatInputManager.isInitialized) {
+    window.chatInputManager.resetHeight();
   }
 }
 
@@ -195,25 +113,33 @@ message_input.addEventListener("blur", () => {
   window.scrollTo(0, 0);
 });
 
+// Intégration avec le nouveau gestionnaire de chat
+document.addEventListener('chatSendMessage', async (event) => {
+  await handle_ask();
+});
+
+// Événement pour le bouton d'envoi
+send_button.addEventListener('click', async () => {
+  await handle_ask();
+});
+
 const delete_conversations = async () => {
   localStorage.clear();
   await new_conversation();
 };
 
 const handle_ask = async () => {
-  // Réinitialiser la hauteur de la barre de chat
-  resetChatBarHeight();
-  message_input.focus();
-
   window.scrollTo(0, 0);
   let message = message_input.value;
 
   if (message.length > 0) {
     message_input.value = ``;
-    // Reset textarea height after clearing
-    resizeTextarea(message_input);
+    // Réinitialiser la hauteur de la barre de chat
+    resetChatBarHeight();
     await ask_gpt(message);
   }
+
+  message_input.focus();
 };
 
 const remove_cancel_button = async () => {
@@ -257,13 +183,13 @@ const ask_gpt = async (message) => {
     message_box.innerHTML += `
             <div class="message message-assistant">
             ${shape.replace(
-              'id="shape"',
-              `id="shape_assistant_${window.token}"`
-            )}
+      'id="shape"',
+      `id="shape_assistant_${window.token}"`
+    )}
                   ${loading_video.replace(
-                    'id="nog_video"',
-                    `id="assistant_${window.token}"`
-                  )}
+      'id="nog_video"',
+      `id="assistant_${window.token}"`
+    )}
                 <div class="content" id="imanage_${window.token}">
                     <div id="cursor"></div>
                 </div>
@@ -498,7 +424,7 @@ function createVideoSourceBubble(url, title, index, allVideoIds, allTitles) {
   `;
 
   // Ajouter l'événement de clic pour ouvrir la page de liens
-  bubble.addEventListener('click', function(e) {
+  bubble.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopPropagation();
     console.log('Bubble clicked, opening links with:', allVideoIds.join(get_sep), allTitles.join(get_sep));
@@ -542,20 +468,20 @@ async function writeRAGConversation(links, text, language) {
         ${videoSourcesContainer.outerHTML}
       </div>
     </div>`;
-    
+
   message_box.scrollTop = message_box.scrollHeight;
-  
+
   // Réattacher les événements de clic après l'ajout au DOM
   const addedBubbles = message_box.querySelectorAll('.video-source-bubble');
   addedBubbles.forEach((bubble, index) => {
-    bubble.addEventListener('click', function(e) {
+    bubble.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
       console.log('Bubble clicked from DOM, opening links with:', video_ids.join(get_sep), titles.join(get_sep));
       openLinks(video_ids.join(get_sep), titles.join(get_sep));
     });
   });
-  
+
   const last_message_assistant = document.getElementsByClassName(
     class_last_message_assistant
   )[0];
@@ -569,7 +495,7 @@ async function writeRAGConversation(links, text, language) {
     scrolly: scrolly,
     titles: titles,
   };
-  
+
   add_message(
     window.conversation_id,
     "video_assistant",
@@ -675,11 +601,11 @@ const new_conversation = async () => {
   window.conversation_id = uuid();
 
   await clear_conversation();
-  
+
   // Afficher le message de greeting au début d'une nouvelle conversation
   const language = navigator.language.startsWith('fr') ? 'fr' : 'en';
   const greetingText = greetingMessages[language];
-  
+
   // Ajouter le message de greeting
   message_box.innerHTML += `
     <div class="message message-assistant">
@@ -692,9 +618,9 @@ const new_conversation = async () => {
       </div>
     </div>
   `;
-  
+
   message_box.scrollTop = message_box.scrollHeight;
-  
+
   await load_conversations(20, 0, true);
 };
 
@@ -712,13 +638,12 @@ const load_conversation = async (conversation_id) => {
           <div class="message ${messageAlignmentClass}">
             ${img}
             <div class="content">
-              ${
-                item.role === "assistant"
-                  ? `<div class="assistant-content" style="word-wrap: break-word; max-width: 100%; overflow-x: auto;">${markdown.render(
-                      item.content
-                    )}</div>`
-                  : item.content
-              }
+              ${item.role === "assistant"
+          ? `<div class="assistant-content" style="word-wrap: break-word; max-width: 100%; overflow-x: auto;">${markdown.render(
+            item.content
+          )}</div>`
+          : item.content
+        }
               ${item.role === "assistant" ? actionsButtons : ""}
             </div>
           </div>
@@ -761,7 +686,7 @@ const load_conversation = async (conversation_id) => {
           const bubbleId = `bubble-${conversation_id}-${i}`;
           const bubbleElement = document.getElementById(bubbleId);
           if (bubbleElement) {
-            bubbleElement.addEventListener('click', function(e) {
+            bubbleElement.addEventListener('click', function (e) {
               e.preventDefault();
               e.stopPropagation();
               console.log('Loaded bubble clicked, opening links with:', video_ids.join(get_sep), titles.join(get_sep));

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Barre de Chat Responsive</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/base/layout.css">
+    <link rel="stylesheet" href="css/components/chat-input.css">
+    <link rel="stylesheet" href="css/components/chat-features.css">
+    
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Styles de test supplémentaires */
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .test-messages {
+            height: 400px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+        }
+        
+        .test-message {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .info-panel {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .controls button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: #2f2f2e;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .controls button:hover {
+            background: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Test - Barre de Chat Responsive N.O.G</h1>
+        
+        <div class="info-panel">
+            <h3>Instructions de test :</h3>
+            <ul>
+                <li>Tapez du texte dans la barre de chat ci-dessous</li>
+                <li>La barre doit s'agrandir automatiquement</li>
+                <li>Utilisez Entrée pour envoyer, Shift+Entrée pour une nouvelle ligne</li>
+                <li>Testez sur différentes tailles d'écran</li>
+            </ul>
+        </div>
+        
+        <div class="controls">
+            <button onclick="testSetValue()">Définir texte long</button>
+            <button onclick="testClearValue()">Vider</button>
+            <button onclick="testDisable()">Désactiver</button>
+            <button onclick="testEnable()">Activer</button>
+            <button onclick="testGetDimensions()">Afficher dimensions</button>
+        </div>
+        
+        <div class="test-messages" id="testMessages">
+            <div class="test-message">
+                <strong>Système :</strong> Interface de test chargée. Tapez votre message ci-dessous.
+            </div>
+        </div>
+        
+        <!-- Barre de chat responsive -->
+        <div class="user-input-container">
+            <div class="user-input">
+                <div class="input-box">
+                    <textarea
+                        id="message-input"
+                        placeholder="Tapez votre message ici... (Entrée pour envoyer, Shift+Entrée pour nouvelle ligne)"
+                        rows="1"
+                    ></textarea>
+                    <div class="input-controls">
+                        <div></div>
+                        <div id="send-button">
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config/chat-config.js"></script>
+    <script src="js/components/chat-input.js"></script>
+    
+    <script>
+        // Variables globales pour le test
+        let messageCounter = 1;
+        
+        // Fonctions de test
+        function testSetValue() {
+            const longText = "Ceci est un texte très long pour tester le redimensionnement automatique de la barre de chat.\n\nIl contient plusieurs lignes et devrait faire grandir la barre de chat automatiquement.\n\nVoici une troisième ligne pour bien tester le comportement.";
+            if (window.chatInputManager) {
+                window.chatInputManager.setValue(longText);
+            }
+        }
+        
+        function testClearValue() {
+            if (window.chatInputManager) {
+                window.chatInputManager.setValue('');
+            }
+        }
+        
+        function testDisable() {
+            if (window.chatInputManager) {
+                window.chatInputManager.disable();
+                addTestMessage('Interface désactivée', 'system');
+            }
+        }
+        
+        function testEnable() {
+            if (window.chatInputManager) {
+                window.chatInputManager.enable();
+                addTestMessage('Interface activée', 'system');
+            }
+        }
+        
+        function testGetDimensions() {
+            if (window.chatInputManager) {
+                const dims = window.chatInputManager.getDimensions();
+                addTestMessage(`Dimensions: ${JSON.stringify(dims, null, 2)}`, 'system');
+            }
+        }
+        
+        function addTestMessage(message, type = 'user') {
+            const messagesContainer = document.getElementById('testMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'test-message';
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const sender = type === 'user' ? 'Utilisateur' : 'Système';
+            
+            messageDiv.innerHTML = `<strong>${sender} (${timestamp}):</strong> ${message}`;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Écouter les événements personnalisés
+        document.addEventListener('chatSendMessage', (event) => {
+            const message = event.detail.message;
+            addTestMessage(message, 'user');
+            
+            // Simuler une réponse
+            setTimeout(() => {
+                addTestMessage(`Réponse automatique au message ${messageCounter}: "${message.substring(0, 50)}${message.length > 50 ? '...' : ''}"`, 'assistant');
+                messageCounter++;
+            }, 1000);
+        });
+        
+        document.addEventListener('chatInputResize', (event) => {
+            console.log('Chat redimensionné:', event.detail);
+        });
+        
+        document.addEventListener('chatInputChange', (event) => {
+            console.log('Contenu changé:', event.detail.value.length, 'caractères');
+        });
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Test interface chargée');
+            addTestMessage('Interface de test initialisée avec succès !', 'system');
+            
+            // Vérifier que le gestionnaire est bien chargé
+            setTimeout(() => {
+                if (window.chatInputManager && window.chatInputManager.isInitialized) {
+                    addTestMessage('ChatInputManager initialisé correctement', 'system');
+                } else {
+                    addTestMessage('Erreur: ChatInputManager non initialisé', 'system');
+                }
+            }, 500);
+        });
+        
+        // Test responsive
+        window.addEventListener('resize', () => {
+            const width = window.innerWidth;
+            const device = width <= 480 ? 'Mobile' : width <= 768 ? 'Tablette' : 'Desktop';
+            console.log(`Redimensionnement: ${width}px (${device})`);
+        });
+    </script>
+</body>
+</html>

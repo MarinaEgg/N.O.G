@@ -1,0 +1,305 @@
+/* ========== STYLES DE BASE ET LAYOUT ========== */
+
+/* Variables CSS globales */
+:root {
+  --colour-1: #ffffff;
+  --colour-2: #f3f4e5;
+  --colour-3: #2f2f2e;
+  --colour-4: #f9e479;
+  --colour-5: #2f2f2e;
+  --colour-6: #2f2f2e;
+
+  --light-gray: #f7f7f7;
+  --light-gray-hover: #f1f1f1;
+  --gray: #d5d5d5;
+  --yellow: #F9E479;
+
+  --accent: #ffffff;
+  --blur-bg: #ffffff;
+  --blur-border: rgba(0, 0, 0, 0.251);
+  --blur-input: #000000;
+  --conversations: #000000;
+
+  --section-gap: 25px;
+  --body-gap: 25px;
+  --border-radius-1: 8px;
+
+  --menu-percentage: 80%;
+  --font-1: "Inter", sans-serif;
+}
+
+/* Reset et styles de base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+  font-family: var(--font-1);
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+  overflow: hidden;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  padding: 8px;
+  background: var(--colour-1);
+  color: var(--colour-3);
+  height: 100vh;
+  overflow: hidden;
+  /* Motif de points en arrière-plan */
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+  background-position: 0 0;
+}
+
+/* Layout principal */
+.row {
+  display: flex;
+  gap: var(--section-gap);
+  height: calc(100vh - 16px);
+  overflow: hidden;
+}
+
+.column {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Conteneur de conversation principal */
+.conversation {
+  width: 100%;
+  height: calc(100vh - 16px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  background: transparent;
+}
+
+/* Zone des messages */
+.conversation #messages {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-wrap: break-word;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  padding: 20px 0;
+  scroll-behavior: smooth;
+  align-items: center;
+  height: calc(100vh - 136px);
+  padding-bottom: 120px;
+  transition: padding-bottom 0.2s ease;
+}
+
+/* Scrollbars personnalisées */
+.disable-scrollbars::-webkit-scrollbar {
+  background: transparent;
+  width: 0px;
+  display: none;
+}
+
+.disable-scrollbars {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+#messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+#messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#messages::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+#messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Styles pour les éléments avec effet de flou */
+.box {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background-color: var(--blur-bg);
+  height: 100%;
+  width: 100%;
+  border-radius: var(--border-radius-1);
+  border: 1px solid var(--blur-border);
+}
+
+/* Utilitaires */
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+/* Gradient d'arrière-plan */
+.gradient {
+  position: absolute;
+  z-index: -1;
+  border-radius: calc(0.5 * 70vw);
+  background-color: var(--accent);
+  background: radial-gradient(circle at center, var(--accent), var(--accent));
+  width: 70vw;
+  height: 70vw;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  filter: blur(calc(0.5 * 70vw)) opacity(0.3);
+  animation: zoom_gradient 6s infinite;
+}
+
+@keyframes zoom_gradient {
+  0%, 100% {
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    transform: translateY(-50%) scale(1.1);
+  }
+}
+
+/* Navigation supérieure */
+.top-navigation-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.top-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: var(--light-gray);
+  padding: 14px;
+  width: 744px;
+  gap: 32px;
+  border-radius: 8px;
+  z-index: 69;
+}
+
+.top-navigation a {
+  color: var(--colour-3);
+  text-decoration: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.top-navigation a:hover {
+  color: black;
+  background-color: var(--light-gray-hover);
+}
+
+/* Responsive design */
+@media screen and (max-width: 990px) {
+  .row {
+    gap: 0;
+  }
+  
+  .conversation {
+    width: 100%;
+  }
+  
+  .top-navigation {
+    width: 90%;
+    max-width: 600px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    padding: 4px;
+  }
+  
+  .row {
+    height: calc(100vh - 8px);
+  }
+  
+  .conversation {
+    height: calc(100vh - 8px);
+  }
+  
+  .conversation #messages {
+    height: calc(100vh - 100px);
+    padding: 15px 0;
+    padding-bottom: 100px;
+  }
+  
+  .top-navigation {
+    width: 95%;
+    padding: 10px;
+    gap: 16px;
+  }
+  
+  .top-navigation a {
+    padding: 6px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .conversation #messages {
+    padding: 10px 0;
+    padding-bottom: 90px;
+  }
+  
+  .top-navigation {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .top-navigation a {
+    padding: 4px 8px;
+    font-size: 13px;
+  }
+}
+
+/* Animations d'entrée */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Classes d'animation */
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+.slide-in-bottom {
+  animation: slideInFromBottom 0.4s ease;
+}

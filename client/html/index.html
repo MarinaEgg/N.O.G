@@ -101,10 +101,15 @@
         transition: 0.5s;
       }
     </style>
+    <link rel="stylesheet" href="/assets/css/base/layout.css" />
+    <link rel="stylesheet" href="/assets/css/components/chat-input.css" />
+    <link rel="stylesheet" href="/assets/css/components/chat-features.css" />
     <link rel="stylesheet" href="/assets/css/style.css" />
     <link rel="stylesheet" href="/assets/css/glass-buttons.css" />
     <script src="/assets/js/highlight.min.js"></script>
     <script src="/assets/js/highlightjs-copy.min.js"></script>
+    <script src="/assets/js/config/chat-config.js"></script>
+    <script src="/assets/js/components/chat-input.js"></script>
     <script>
       window.conversation_id = `{{chat_id}}`;
     </script>
@@ -163,10 +168,7 @@
                 <textarea
                   id="message-input"
                   placeholder="Posez votre question à nOg"
-                  cols="30"
-                  rows="10"
-                  style="white-space: pre-wrap; max-height: 40px"
-                  oninput="resizeTextarea(this)"
+                  rows="1"
                 ></textarea>
                 <div class="input-controls">
                   <div></div>

@@ -1,0 +1,206 @@
+/* ========== STYLES POUR LA BARRE DE CHAT RESPONSIVE ========== */
+
+/* Variables CSS pour la barre de chat */
+:root {
+  --chat-input-min-height: 40px;
+  --chat-input-max-height: 200px;
+  --chat-container-min-height: 60px;
+  --chat-height-offset: 0px;
+  --chat-transition: all 0.2s ease;
+}
+
+/* Conteneur principal de l'input utilisateur */
+.user-input-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 20px;
+  background: transparent;
+  pointer-events: none;
+}
+
+.user-input {
+  width: 100%;
+  max-width: 744px;
+  margin: 0 auto;
+  border-radius: 8px;
+  pointer-events: auto;
+}
+
+/* Conteneur de la boîte d'input */
+.input-box {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 10px 15px;
+  background-color: var(--light-gray);
+  border-radius: 8px;
+  border: 1px solid var(--blur-border);
+  min-height: var(--chat-container-min-height);
+  height: var(--chat-container-min-height);
+  transition: var(--chat-transition);
+  position: relative;
+}
+
+/* Textarea principal */
+#message-input {
+  flex: 1;
+  min-height: var(--chat-input-min-height);
+  height: var(--chat-input-min-height);
+  max-height: var(--chat-input-max-height);
+  padding: 10px 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: var(--font-1);
+  font-size: 15px;
+  color: var(--colour-3);
+  line-height: 1.4;
+  overflow-y: hidden;
+  transition: var(--chat-transition);
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+#message-input::placeholder {
+  color: #888;
+}
+
+/* Scrollbar pour le textarea quand nécessaire */
+#message-input.scrollable {
+  overflow-y: auto;
+}
+
+#message-input::-webkit-scrollbar {
+  width: 5px;
+}
+
+#message-input::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#message-input::-webkit-scrollbar-thumb {
+  background: #c7a2ff;
+  border-radius: 3px;
+}
+
+#message-input::-webkit-scrollbar-thumb:hover {
+  background: #8b3dff;
+}
+
+/* Contrôles d'input (bouton d'envoi) */
+.input-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+#send-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: var(--colour-3);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+#send-button:hover {
+  background-color: #1a1a1a;
+}
+
+#send-button i {
+  font-size: 14px;
+}
+
+/* Ajustement du conteneur de messages quand l'input s'agrandit */
+#messages {
+  transition: padding-bottom 0.2s ease;
+}
+
+#messages.expanded-input {
+  padding-bottom: calc(120px + var(--chat-height-offset));
+}
+
+/* Ajustement du bouton "Arrêter la génération" */
+.stop_generating {
+  bottom: calc(80px + var(--chat-height-offset));
+  transition: bottom 0.2s ease;
+}
+
+/* Styles responsive */
+@media screen and (max-width: 768px) {
+  .user-input-container {
+    padding: 15px;
+  }
+  
+  .user-input {
+    max-width: 100%;
+  }
+  
+  .input-box {
+    padding: 8px 12px;
+  }
+  
+  #message-input {
+    font-size: 16px; /* Évite le zoom sur iOS */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .user-input-container {
+    padding: 10px;
+  }
+  
+  .input-box {
+    padding: 6px 10px;
+  }
+}
+
+/* Animation d'apparition */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.user-input-container {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* États de focus */
+#message-input:focus {
+  outline: none;
+}
+
+.input-box:focus-within {
+  border-color: var(--colour-3);
+  box-shadow: 0 0 0 2px rgba(47, 47, 46, 0.1);
+}
+
+/* Styles pour les états désactivés */
+.input-box.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.input-box.disabled #message-input {
+  cursor: not-allowed;
+}
+
+.input-box.disabled #send-button {
+  cursor: not-allowed;
+  background-color: #ccc;
+}

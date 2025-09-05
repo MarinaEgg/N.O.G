@@ -59,13 +59,89 @@ function resetChatBarHeight() {
 }
 
 function openLibrary() {
-  document.getElementById("librarySideNav").style.width = "100vw";
-  document.getElementById("menu").style.visibility = "visible";
-
-  // Ajuster pour la sidebar si elle est ouverte
+  console.log("🔍 DEBUG: openLibrary called");
+  
+  // Vérification des éléments DOM
+  const librarySideNav = document.getElementById("librarySideNav");
+  const sideNavContent = document.querySelector(".library-side-nav-content");
+  const menu = document.getElementById("menu");
+  
+  console.log("🔍 DOM elements check:");
+  console.log("- librarySideNav:", librarySideNav);
+  console.log("- library-side-nav-content:", sideNavContent);
+  console.log("- menu element:", menu);
+  
+  console.log("🔍 Function check:");
+  console.log("- onBoardingContent exists:", typeof onBoardingContent !== 'undefined');
+  
+  if (!librarySideNav) {
+    console.error("❌ Element librarySideNav not found!");
+    return;
+  }
+  
+  if (!sideNavContent) {
+    console.error("❌ Element library-side-nav-content not found!");
+    return;
+  }
+  
+  console.log("✅ All DOM elements found, proceeding...");
+  
+  // Essayer de charger le contenu
+  try {
+    console.log("📄 Loading onboarding content...");
+    sideNavContent.innerHTML = onBoardingContent();
+    console.log("✅ Content loaded successfully");
+  } catch (error) {
+    console.error("❌ Error loading onboarding content:", error);
+    sideNavContent.innerHTML = `
+      <div class="side-nav-header">
+        <a onClick="closeLibrary()" style="color: #2f2f2e; text-decoration: none; cursor: pointer; display: flex; align-items: center; padding: 10px;">
+          <i class="fa fa-arrow-left" style="margin-right: 5px;"></i> 
+          Retour à la conversation
+        </a>
+        <img style="width: 25px" src="/assets/img/nog_logo_no_text.png" alt="logo" />
+      </div>
+      <div style="padding: 20px; text-align: center;">
+        <h2>Agents Spécialisés</h2>
+        <p>Le contenu de l'onboarding est en cours de chargement...</p>
+        <div id="debug-info">
+          <p><strong>Debug info:</strong></p>
+          <p>onBoardingContent function: ${typeof onBoardingContent !== 'undefined' ? 'Found' : 'Missing'}</p>
+          <p>Error: ${error.message}</p>
+        </div>
+      </div>
+    `;
+  }
+  
+  console.log("🎨 Setting sidebar styles...");
+  
+  // Afficher le sidebar avec transitions
+  librarySideNav.style.width = "100vw";
+  librarySideNav.style.display = "block";
+  
+  console.log("📐 Current sidebar width:", librarySideNav.style.width);
+  console.log("📐 Current sidebar display:", librarySideNav.style.display);
+  
+  // Rendre le menu visible après un délai
   setTimeout(() => {
-    adjustElementsForSidebar();
+    const menuElement = document.getElementById("menu");
+    if (menuElement) {
+      menuElement.style.visibility = "visible";
+      console.log("✅ Menu visibility set to visible");
+    } else {
+      console.log("⚠️ Menu element not found after timeout");
+    }
+    
+    // Ajuster pour la sidebar
+    if (typeof adjustElementsForSidebar === 'function') {
+      adjustElementsForSidebar();
+      console.log("✅ Elements adjusted for sidebar");
+    } else {
+      console.log("⚠️ adjustElementsForSidebar function not found");
+    }
   }, 100);
+  
+  console.log("🎉 openLibrary completed");
 }
 
 function closeLibrary() {

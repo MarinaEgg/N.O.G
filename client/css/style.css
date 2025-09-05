@@ -2039,7 +2039,21 @@ a:-webkit-any-link {
   display: none !important;
 }
 
-/* .input-box défini dans chat-input.css - éviter les conflits */
+.input-box {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 744px;
+  background-color: var(--light-gray);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 25px;
+  padding: 10px 15px;
+  box-sizing: border-box;
+  overflow: visible;
+  min-height: 60px;
+  transition: all 0.2s ease;
+  position: relative;
+}
 
 /* CORRECTION CRITIQUE : Suppression des contraintes de hauteur sur le textarea */
 #message-input {

@@ -19,6 +19,19 @@
   padding: 20px;
   background: transparent;
   pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+/* AJOUT : Décalage avec sidebar */
+body.sidebar-open .user-input-container {
+  left: 280px;
+}
+
+/* AJOUT : Responsive mobile - pas de décalage */
+@media screen and (max-width: 990px) {
+  body.sidebar-open .user-input-container {
+    left: 0 !important;
+  }
 }
 
 .user-input {

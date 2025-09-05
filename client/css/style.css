@@ -143,6 +143,79 @@
   border: 1px solid #e0e0e0;
 }
 
+/* ========== CORRECTION SIDEBAR PUSH MENU ========== */
+
+/* Barre de chat responsive avec sidebar */
+.user-input-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+body.sidebar-open .user-input-container {
+  left: 280px; /* Décalage avec la sidebar */
+}
+
+/* Page onboarding avec sidebar */
+#librarySideNav {
+  transition: all 0.3s ease;
+}
+
+body.sidebar-open #librarySideNav {
+  margin-left: 280px;
+  width: calc(100vw - 280px) !important;
+}
+
+/* Correction pour les éléments qui se décalent */
+.sidenav {
+  transition: all 0.3s ease;
+}
+
+body.sidebar-open .sidenav:not(#conversations) {
+  margin-left: 280px;
+  width: calc(100vw - 280px) !important;
+}
+
+/* Stop generating button */
+body.sidebar-open .stop_generating {
+  left: calc(50% + 140px); /* 280px/2 = 140px de décalage */
+}
+
+/* Mobile - Pas de décalage sur mobile */
+@media (max-width: 990px) {
+  body.sidebar-open .user-input-container {
+    left: 0 !important;
+  }
+  
+  body.sidebar-open #librarySideNav {
+    margin-left: 0 !important;
+    width: 100vw !important;
+  }
+  
+  body.sidebar-open .sidenav:not(#conversations) {
+    margin-left: 0 !important;
+    width: 100vw !important;
+  }
+  
+  body.sidebar-open .stop_generating {
+    left: 50% !important;
+  }
+}
+
+/* Correction pour les modals qui s'ouvrent */
+body.sidebar-open .modal-overlay {
+  left: 285px; /* 280px + 5px de marge */
+}
+
+@media (max-width: 990px) {
+  body.sidebar-open .modal-overlay {
+    left: 5px !important;
+  }
+}
+
 /* État ouvert de la sidebar */
 body.sidebar-open .conversations {
   left: 0;

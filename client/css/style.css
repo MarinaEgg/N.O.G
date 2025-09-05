@@ -2045,7 +2045,7 @@ a:-webkit-any-link {
   width: 100%;
   max-width: 744px;
   background-color: var(--light-gray);
-  border: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 25px;
   padding: 10px 15px;
   box-sizing: border-box;

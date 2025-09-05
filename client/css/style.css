@@ -1915,3 +1915,29 @@ font {
     min-width: unset;
   }
 }
+
+/* AJOUTEZ CE CSS DANS style.css 
+
+#librarySideNav {
+  z-index: 9999 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+/* S'assurer que le contenu onboarding passe au-dessus */
+.library-side-nav-content {
+  z-index: 10000 !important;
+  position: relative !important;
+}
+
+/* Masquer le chat principal quand onboarding est ouvert */
+body.onboarding-open .chat-main-container {
+  display: none !important;
+}
+
+body.onboarding-open .conversations {
+  display: none !important;
+}

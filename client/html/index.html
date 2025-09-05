@@ -42,14 +42,34 @@
     />
 
     <link rel="manifest" href="/assets/img/site.webmanifest" />
+    
+    <!-- Charger les scripts dans le bon ordre -->
     <script src="/assets/js/icons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/markdown-it@latest/dist/markdown-it.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="/assets/js/highlight.min.js"></script>
+    <script src="/assets/js/highlightjs-copy.min.js"></script>
+    
+    <!-- Configuration et scripts de base -->
+    <script src="/assets/js/config/chat-config.js"></script>
+    
+    <!-- Scripts principaux - ORDRE IMPORTANT -->
     <script src="/assets/js/links.js" defer></script>
+    <script src="/assets/js/components/chat-input.js" defer></script>
     <script src="/assets/js/chat.js" defer></script>
+    
+    <!-- CSS -->
     <link
       rel="stylesheet"
       href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/base16/dracula.min.css"
     />
+    <link rel="stylesheet" href="/assets/css/base/layout.css" />
+    <link rel="stylesheet" href="/assets/css/components/chat-input.css" />
+    <link rel="stylesheet" href="/assets/css/components/chat-features.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/glass-buttons.css" />
+
+    <!-- Variables globales nécessaires -->
     <script>
       const like_img = `<img src="/assets/img/convertation-icons/like.png" alt="Like">`;
       const user_image = `<img class="user" src="/assets/img/user-icon.webp" alt="User Avatar">`;
@@ -60,10 +80,18 @@
       const loading_video = `<img style="width: 40px; height: 40px; opacity:1; content: url(/assets/img/nog_logo_no_text.png); background-position: center; background-repeat: no-repeat; background-size: cover;" id="nog_video" class="conversation_video">`;
       const shape = `<img class="assistant-image" id="shape" style="width: 40px; height: 40px;position:absolute; content: url(/assets/img/gpt_egg.png); background-position: center; background-repeat: no-repeat; background-size: cover;">`;
     </script>
+    
+    <!-- URL params -->
     <script>
       const params = new URLSearchParams(window.location.search);
       const back_scrolly = params.get("scrollPos", -1); // scroll level in the chat if back from links
     </script>
+    
+    <!-- Conversation ID -->
+    <script>
+      window.conversation_id = `{{chat_id}}`;
+    </script>
+    
     <style>
       .hljs {
         color: #e9e9f4;
@@ -101,21 +129,8 @@
         transition: 0.5s;
       }
     </style>
-    <link rel="stylesheet" href="/assets/css/base/layout.css" />
-    <link rel="stylesheet" href="/assets/css/components/chat-input.css" />
-    <link rel="stylesheet" href="/assets/css/components/chat-features.css" />
-    <link rel="stylesheet" href="/assets/css/style.css" />
-    <link rel="stylesheet" href="/assets/css/glass-buttons.css" />
-    <script src="/assets/js/highlight.min.js"></script>
-    <script src="/assets/js/highlightjs-copy.min.js"></script>
-    <script src="/assets/js/config/chat-config.js"></script>
-    <script src="/assets/js/components/chat-input.js"></script>
-    <script src="/assets/js/debug-check.js"></script>
-    <script>
-      window.conversation_id = `{{chat_id}}`;
-    </script>
+    
     <title>nOg</title>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   </head>
   <body>
     <div class="gradient"></div>

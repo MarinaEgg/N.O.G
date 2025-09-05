@@ -159,6 +159,12 @@ body.sidebar-open .user-input-container {
   left: 280px; /* Décalage avec la sidebar */
 }
 
+/* S'assurer que la barre revient au centre quand la sidebar se ferme */
+body.sidebar-collapsed .user-input-container,
+body:not(.sidebar-open) .user-input-container {
+  left: 0 !important;
+}
+
 /* Page onboarding avec sidebar */
 #librarySideNav {
   transition: all 0.3s ease;

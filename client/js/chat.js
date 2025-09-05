@@ -115,6 +115,9 @@ function openLibrary() {
   
   console.log("🎨 Setting sidebar styles...");
   
+  // AJOUTER cette ligne :
+  document.body.classList.add('onboarding-open');
+  
   // Afficher le sidebar avec transitions
   librarySideNav.style.width = "100vw";
   librarySideNav.style.display = "block";
@@ -145,6 +148,9 @@ function openLibrary() {
 }
 
 function closeLibrary() {
+  // AJOUTER cette ligne :
+  document.body.classList.remove('onboarding-open');
+  
   document.getElementById("librarySideNav").style.width = "0vw";
   document.getElementById("menu").style.visibility = "hidden";
 }

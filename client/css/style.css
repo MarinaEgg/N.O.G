@@ -122,6 +122,54 @@
   width: 50%;
 }
 
+/* Sidebar Toggle Button */
+.sidebar-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1001;
+  width: 40px;
+  height: 40px;
+  background: var(--light-gray);
+  border: 1px solid var(--blur-border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.sidebar-toggle span {
+  width: 20px;
+  height: 2px;
+  background-color: var(--colour-3);
+  transition: all 0.3s ease;
+  border-radius: 1px;
+}
+
+.sidebar-toggle:hover {
+  background: var(--light-gray-hover);
+  transform: scale(1.05);
+}
+
+/* Hamburger animation */
+body.sidebar-open .sidebar-toggle span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+body.sidebar-open .sidebar-toggle span:nth-child(2) {
+  opacity: 0;
+}
+
+body.sidebar-open .sidebar-toggle span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
+}
+
 .conversations {
   margin: 0;
   max-width: 260px;
@@ -139,9 +187,57 @@
   justify-content: space-between;
   gap: 16px;
 
+  transition: all 0.3s ease;
+
   @media screen and (max-width: 990px) {
     display: none;
   }
+}
+
+/* Collapsed sidebar state */
+body.sidebar-collapsed .conversations {
+  transform: translateX(-100%);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+body.sidebar-collapsed .sidebar-toggle {
+  display: flex;
+}
+
+/* Expanded sidebar state */
+body.sidebar-open .conversations {
+  transform: translateX(0);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+body.sidebar-open .sidebar-toggle {
+  display: flex;
+}
+
+/* Initial state - sidebar collapsed by default */
+body {
+  transition: all 0.3s ease;
+}
+
+body:not(.sidebar-open):not(.sidebar-collapsed) .conversations {
+  transform: translateX(-100%);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+body:not(.sidebar-open):not(.sidebar-collapsed) .sidebar-toggle {
+  display: flex;
 }
 
 ol li {

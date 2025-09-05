@@ -1933,11 +1933,17 @@ font {
   position: relative !important;
 }
 
-/* Masquer le chat principal quand onboarding est ouvert */
+/* Masquer le chat principal UNIQUEMENT quand onboarding est ouvert */
 body.onboarding-open .chat-main-container {
   display: none !important;
 }
 
 body.onboarding-open .conversations {
   display: none !important;
+}
+
+/* S'assurer que la sidebar et le chat restent visibles quand la sidebar est ouverte */
+body.sidebar-open:not(.onboarding-open) .chat-main-container,
+body.sidebar-open:not(.onboarding-open) .conversations {
+  display: block !important;
 }

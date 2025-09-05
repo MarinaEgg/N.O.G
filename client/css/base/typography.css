@@ -1,0 +1,74 @@
+/* ========== TYPOGRAPHY STYLES ========== */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+/* Headings */
+h1 {
+  font-family: "Inter";
+  font-weight: 700;
+  font-size: 32px;
+}
+
+h2 {
+  font-family: "Inter";
+  font-weight: 600;
+  font-size: 26px;
+}
+
+h3 {
+  font-family: "Inter";
+  font-weight: 500;
+  font-size: 22px;
+}
+
+/* Text formatting */
+strong {
+  font-family: "Inter";
+  font-weight: 700;
+}
+
+em {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 300;
+}
+
+strong em,
+em strong {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: bold;
+}
+
+/* Lists */
+ul,
+ol {
+  font-family: "Inter";
+  font-weight: 400;
+  font-size: 18px;
+  padding-left: 20px;
+}
+
+ol li {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+/* Blockquotes */
+blockquote {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 500;
+  color: #6c757d;
+  font-size: 18px;
+  border-left: 4px solid #ccc;
+  padding-left: 26px;
+}
+
+/* Paragraphs and list items */
+p,
+li {
+  font-family: "Inter";
+  font-size: 18px;
+  font-weight: 400;
+}

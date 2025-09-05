@@ -1,9 +1,18 @@
-/* ========== MAIN STYLES ========== */
-/* Base styles, variables, and typography are imported via index.css */
+/* ========== MAIN CSS FILE ========== */
+/* This file imports all CSS components and contains core application styles */
 
-/* Code block styles moved to components/code-blocks.css */
+/* Import base foundation styles */
+@import url('./base/variables.css');
+@import url('./base/reset.css');
+@import url('./base/typography.css');
+@import url('./base/layout.css');
 
-/* ========== TABLE STYLES MOVED TO tables.css ========== */
+/* Import component styles */
+@import url('./components/tables.css');
+@import url('./components/glass-buttons.css');
+@import url('./components/code-blocks.css');
+
+/* ========== CORE APPLICATION STYLES ========== */
 
 .modal-overlay {
   position: absolute;

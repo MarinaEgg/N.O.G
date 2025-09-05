@@ -218,12 +218,10 @@
   outline: none;
 }
 
-.input-box:focus-within,
-.input-box:focus,
-#message-input:focus {
-  outline: none !important;
+.input-box:focus-within {
   border-color: var(--colour-3);
   box-shadow: 0 0 0 2px rgba(47, 47, 46, 0.2);
+  outline: none;
 }
 
 /* Styles pour les états désactivés */

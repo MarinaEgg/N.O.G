@@ -2031,7 +2031,7 @@ a:-webkit-any-link {
   justify-content: center;
   align-items: flex-end;
   transition: all 0.2s ease;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  /* border-top: 1px solid rgba(0, 0, 0, 0.05); ← SUPPRIMÉ - Trait gris indésirable */
 }
 
 /* Masquer la barre de chat dans les pages media/library */

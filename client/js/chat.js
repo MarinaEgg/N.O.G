@@ -61,6 +61,11 @@ function resetChatBarHeight() {
 function openLibrary() {
   document.getElementById("librarySideNav").style.width = "100vw";
   document.getElementById("menu").style.visibility = "visible";
+
+  // Ajuster pour la sidebar si elle est ouverte
+  setTimeout(() => {
+    adjustElementsForSidebar();
+  }, 100);
 }
 
 function closeLibrary() {
@@ -72,6 +77,11 @@ async function openLinks(videoIdsParam, titlesParams) {
   document.getElementById("LinksSideNav").style.width = "100vw";
   document.getElementById("LinksSideNav").style.padding = "25px";
   document.getElementById("LinksSideNav").innerHTML = linksHTML();
+
+  // Ajuster pour la sidebar si elle est ouverte
+  setTimeout(() => {
+    adjustElementsForSidebar();
+  }, 100);
 
   const video_ids = videoIdsParam.split(get_sep);
   const titles = titlesParams.split(get_sep);
@@ -848,6 +858,58 @@ function initSidebarToggle() {
     toggleButton.addEventListener("click", toggleSidebar);
   }
 }
+
+// ========== GESTION RESPONSIVE SIDEBAR PUSH MENU ==========
+
+// Fonction pour ajuster les éléments selon l'état de la sidebar
+function adjustElementsForSidebar() {
+  const body = document.getElementsByTagName('body')[0];
+  const isOpen = hasClass(body, 'sidebar-open');
+  const isMobile = window.innerWidth <= 990;
+  
+  // Ajustement de la barre de chat
+  const chatInput = document.querySelector('.user-input-container');
+  if (chatInput) {
+    if (isOpen && !isMobile) {
+      chatInput.style.left = '280px';
+    } else {
+      chatInput.style.left = '0';
+    }
+  }
+  
+  // Ajustement du bouton stop generating
+  const stopButton = document.querySelector('.stop_generating');
+  if (stopButton) {
+    if (isOpen && !isMobile) {
+      stopButton.style.left = 'calc(50% + 140px)';
+    } else {
+      stopButton.style.left = '50%';
+    }
+  }
+  
+  // Ajustement des sidebars (onboarding, links)
+  const librarySideNav = document.getElementById('librarySideNav');
+  const linksSideNav = document.getElementById('LinksSideNav');
+  
+  [librarySideNav, linksSideNav].forEach(nav => {
+    if (nav) {
+      if (isOpen && !isMobile && nav.style.width && nav.style.width !== '0vw') {
+        nav.style.marginLeft = '280px';
+        nav.style.width = 'calc(100vw - 280px)';
+      } else if (!isOpen || isMobile) {
+        nav.style.marginLeft = '0';
+        if (nav.style.width && nav.style.width !== '0vw') {
+          nav.style.width = '100vw';
+        }
+      }
+    }
+  });
+}
+
+// Écouter les changements de taille d'écran
+window.addEventListener('resize', () => {
+  adjustElementsForSidebar();
+});
 
 window.onload = async () => {
   load_settings_localstorage();

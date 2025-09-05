@@ -1,203 +1,274 @@
-# CSS Architecture & Organization
+# CSS Architecture - nOg Legal Chatbot Interface
 
-This directory contains a modular CSS architecture designed for maintainability, performance, and scalability. The styles have been reorganized from a single large file into focused, reusable components.
+This directory contains the CSS architecture for the nOg Legal Chatbot interface, organized into a modular structure for better maintainability and performance.
 
-## 📁 Directory Structure
+## 🏗️ Complete Interface Architecture
+
+The nOg interface is a modern chat application with the following main components:
+
+### **Main Interface Layout**
+- **Left Sidebar**: Conversations list with media access and controls
+- **Center Panel**: Chat conversation area with messages
+- **Input Area**: Responsive chat input with send button
+- **Navigation**: Top navigation bar for different sections
+- **Modals**: Side navigation panels for media and links
+
+## 📁 CSS Directory Structure
 
 ```
 css/
-├── index.css              # 🎯 Main entry point - imports all CSS files
-├── style.css              # 🏠 Core application layout and UI components
-├── Button.css             # 🔘 Legacy button styles (to be deprecated)
-├── Button copy.css        # 📋 Backup of button styles
-├── README.md              # 📖 This documentation file
-├── base/                  # 🏗️ Foundation layer
-│   ├── variables.css      # 🎨 CSS custom properties and design tokens
-│   ├── reset.css          # 🔄 CSS reset and base element styles
-│   └── typography.css     # ✍️ Font definitions and text styling
-└── components/            # 🧩 Modular UI components
-    ├── tables.css         # 📊 Advanced glassmorphic table styles
-    ├── glass-buttons.css  # ✨ Glass morphism button effects
-    └── code-blocks.css    # 💻 Code syntax highlighting and blocks
+├── index.css                    # 🎯 Main CSS entry point (imports all files)
+├── style.css                    # 🏠 Core application UI and layout
+├── Button.css                   # 🔘 Legacy button styles (deprecated)
+├── Button copy.css              # 📋 Backup of legacy buttons
+├── README.md                    # 📖 This documentation
+├── base/                        # 🏗️ Foundation layer
+│   ├── layout.css              # 📐 Main layout structure and responsive design
+│   ├── variables.css           # 🎨 CSS custom properties and design tokens
+│   ├── reset.css               # 🔄 CSS reset and base element styles
+│   └── typography.css          # ✍️ Font definitions and text styling
+└── components/                  # 🧩 Modular UI components
+    ├── chat-input.css          # 💬 Responsive chat input bar
+    ├── chat-features.css       # 🔧 Chat functionality styles
+    ├── tables.css              # 📊 Advanced glassmorphic tables
+    ├── glass-buttons.css       # ✨ Glass morphism button effects
+    └── code-blocks.css         # 💻 Code syntax highlighting
 ```
 
-## 📋 File Descriptions
+## 📋 Detailed File Descriptions
 
-### Core Files
+### 🎯 Entry Point
 
-#### `index.css` 🎯
-**Purpose**: Main entry point for all CSS  
-**Contains**: Import statements for all CSS files  
-**Usage**: Link this file in your HTML to get all styles  
+#### `index.css`
+**Purpose**: Main CSS entry point that imports all stylesheets  
+**Usage**: Link this single file in HTML to load all styles  
 ```html
-<link rel="stylesheet" href="css/index.css">
+<link rel="stylesheet" href="/assets/css/index.css">
 ```
 
-#### `style.css` 🏠
-**Purpose**: Core application styles and layout  
-**Contains**: 
-- Main layout components (conversations, navigation, modals)
-- UI elements (inputs, selects, overlays)
-- Application-specific styling
-- Grid and flexbox layouts
-- Responsive design rules
+### 🏠 Core Application Files
 
-### Base Layer (`base/`)
-
-#### `variables.css` 🎨
-**Purpose**: Design system foundation  
+#### `style.css`
+**Purpose**: Core application UI components and specific styling  
 **Contains**:
-- Color palette definitions
-- Spacing and sizing scales
-- Typography scales
-- Border radius values
-- Animation timing functions
-- Theme-specific variables
+- Conversation sidebar styling
+- Message display and formatting
+- Modal overlays and side navigation
+- Application-specific UI elements
+- Legacy styles being gradually migrated
 
-#### `reset.css` 🔄
-**Purpose**: Normalize browser defaults  
+### 🏗️ Foundation Layer (`base/`)
+
+#### `layout.css`
+**Purpose**: Main layout structure and responsive framework  
+**Contains**:
+- Grid layout system (`.row`, `.column`)
+- Main conversation container
+- Message area scrolling and layout
+- Navigation positioning
+- Responsive breakpoints (990px, 768px, 480px)
+- Mobile-first responsive design
+- Scrollbar customization
+
+#### `variables.css`
+**Purpose**: Design system foundation with CSS custom properties  
+**Contains**:
+- Color palette (whites, grays, accent yellow)
+- Spacing scale (`--section-gap`, `--body-gap`)
+- Typography scale (`--font-1`)
+- Border radius values
+- Component-specific variables
+
+#### `reset.css`
+**Purpose**: Browser normalization and base element styling  
 **Contains**:
 - CSS reset rules
 - Box-sizing normalization
-- Base element styling
-- HTML and body setup
+- Base HTML/body setup
+- Font family inheritance
 
-#### `typography.css` ✍️
-**Purpose**: Text and font styling  
+#### `typography.css`
+**Purpose**: Text styling and font definitions  
 **Contains**:
-- Google Fonts imports
-- Heading styles (h1-h6)
+- Google Fonts imports (Inter font family)
+- Heading hierarchy (h1-h6)
 - Text formatting (bold, italic, emphasis)
-- List styling
-- Blockquote styling
-- Paragraph and text defaults
+- List and blockquote styling
+- Paragraph defaults
 
-### Components (`components/`)
+### 🧩 UI Components (`components/`)
 
-#### `tables.css` 📊
-**Purpose**: Advanced table styling with glassmorphic effects  
+#### `chat-input.css`
+**Purpose**: Responsive chat input bar with dynamic sizing  
 **Features**:
-- 3D hover effects that "pull" rows toward the user
+- Auto-expanding textarea (40px to 200px height)
+- Smooth height transitions
+- Mobile-optimized touch targets
+- Send button integration
+- Scroll handling for long messages
+
+#### `chat-features.css`
+**Purpose**: Chat functionality and interaction styles  
+**Features**:
+- Message actions (copy, like, dislike)
+- Typing indicators
+- Stop generation button
+- Message animations
+- User/assistant message differentiation
+
+#### `tables.css`
+**Purpose**: Advanced glassmorphic table styling  
+**Features**:
+- 3D "pull" hover effects
 - Animated gradient borders
-- Glassmorphic background with blur effects
-- Responsive design for touch devices
-- Smooth transitions and animations
-- Custom shadow effects
+- Glassmorphic backgrounds with blur
+- Touch device optimizations
+- Responsive table containers
 
-**Use Cases**: Data tables, comparison tables, dashboard grids
-
-#### `glass-buttons.css` ✨
-**Purpose**: Glass morphism button effects  
+#### `glass-buttons.css`
+**Purpose**: Glass morphism effects for interactive buttons  
 **Features**:
 - Frosted glass appearance
 - Animated conic gradient borders
 - Hover and active state animations
-- High CSS specificity to override existing styles
-- Touch device optimizations
-- Shine effects on interaction
+- High specificity overrides
+- Touch-friendly interactions
 
-**Targets**: New conversation buttons, delete buttons, send buttons, media page buttons
+**Targets**:
+- "New conversation" button
+- "Delete conversations" button
+- Send message button
+- Media page buttons
 
-#### `code-blocks.css` 💻
+#### `code-blocks.css`
 **Purpose**: Code display and syntax highlighting  
 **Features**:
-- Syntax highlighting for highlight.js
-- Frosted glass effect for code containers
-- Inline vs block code differentiation
-- Custom color scheme optimized for readability
-- Responsive code blocks
-- Copy-friendly styling
-
-**Use Cases**: Code examples, terminal output, inline code snippets
-
-### Legacy Files
-
-#### `Button.css` & `Button copy.css` 🔘📋
-**Status**: Legacy files  
-**Purpose**: Original button styles (to be phased out)  
-**Note**: These will be replaced by the new component system
-
-## 🚀 Usage Guide
-
-### Recommended Approach
-Use the main index file to import all styles:
-```html
-<link rel="stylesheet" href="css/index.css">
-```
-
-### Selective Loading
-For performance optimization, import only needed components:
-```html
-<!-- Base layer (required) -->
-<link rel="stylesheet" href="css/base/variables.css">
-<link rel="stylesheet" href="css/base/reset.css">
-<link rel="stylesheet" href="css/base/typography.css">
-
-<!-- Core styles (required) -->
-<link rel="stylesheet" href="css/style.css">
-
-<!-- Components (optional - load as needed) -->
-<link rel="stylesheet" href="css/components/tables.css">
-<link rel="stylesheet" href="css/components/glass-buttons.css">
-<link rel="stylesheet" href="css/components/code-blocks.css">
-```
+- Highlight.js integration
+- Frosted glass code containers
+- Inline vs block code styling
+- Custom syntax color scheme
+- Copy-friendly formatting
 
 ## 🎨 Design System
 
 ### Color Palette
-- **Primary**: White-based theme with subtle grays
-- **Accent**: Yellow highlights (#F9E479)
-- **Text**: Dark gray (#2f2f2e) for optimal readability
-- **Backgrounds**: Light grays with glassmorphic effects
+```css
+--colour-1: #ffffff;        /* Primary background */
+--colour-3: #2f2f2e;        /* Primary text */
+--colour-4: #f9e479;        /* Accent yellow */
+--light-gray: #f7f7f7;      /* UI backgrounds */
+--blur-border: rgba(0,0,0,0.251); /* Glass borders */
+```
 
-### Effects
-- **Glassmorphism**: Frosted glass effects with backdrop blur
+### Layout System
+- **Main Layout**: Flexbox-based row/column system
+- **Responsive**: Mobile-first with 3 breakpoints
+- **Spacing**: Consistent gap system using CSS variables
+- **Typography**: Inter font family with weight variations
+
+### Visual Effects
+- **Glassmorphism**: Backdrop blur with subtle transparency
 - **3D Interactions**: Transform-based hover effects
 - **Smooth Animations**: CSS transitions with custom easing
-- **Responsive**: Touch-friendly interactions for mobile
+- **Dot Pattern**: Subtle background texture
 
-## 📈 Benefits
+## 🚀 Usage in HTML
 
-### 🔧 **Maintainability**
-- Each component is self-contained and focused
-- Easy to locate and modify specific styles
-- Clear separation of concerns
+The HTML structure uses this CSS architecture:
 
-### ⚡ **Performance**
-- Load only the components you need
-- Reduced CSS bundle size for specific pages
-- Better caching strategies possible
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Core CSS imports -->
+  <link rel="stylesheet" href="/assets/css/base/layout.css" />
+  <link rel="stylesheet" href="/assets/css/components/chat-input.css" />
+  <link rel="stylesheet" href="/assets/css/components/chat-features.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/glass-buttons.css" />
+</head>
+<body>
+  <div class="row">
+    <!-- Left sidebar -->
+    <div class="conversations shadow">
+      <button class="new_convo">New conversation</button>
+    </div>
+    
+    <!-- Main chat area -->
+    <div class="conversation disable-scrollbars">
+      <div id="messages"></div>
+      <div class="user-input-container">
+        <textarea id="message-input"></textarea>
+        <div id="send-button"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+```
 
-### 📐 **Organization**
-- Logical file structure
-- Consistent naming conventions
-- Clear documentation and comments
+## 📱 Responsive Design
 
-### 🔄 **Scalability**
-- Easy to add new components
-- Modular architecture supports growth
-- Reusable design patterns
+### Breakpoints
+- **Desktop**: > 990px (full sidebar visible)
+- **Tablet**: 768px - 990px (sidebar hidden)
+- **Mobile**: < 768px (optimized touch targets)
+- **Small Mobile**: < 480px (compact layout)
 
-### 🌍 **Collaboration**
-- English comments throughout
-- Clear file purposes and structure
-- Standardized code formatting
+### Mobile Optimizations
+- Touch-friendly button sizes
+- Optimized input area
+- Simplified navigation
+- Reduced spacing and padding
 
-## 🛠️ Development Guidelines
+## 🔧 Development Guidelines
 
-1. **New Components**: Add new UI components to the `components/` directory
-2. **Variables**: Define new design tokens in `base/variables.css`
-3. **Base Styles**: Modify foundational styles in the `base/` directory
-4. **Documentation**: Update this README when adding new files
-5. **Comments**: Use English comments for international collaboration
+### Adding New Components
+1. Create new file in `components/` directory
+2. Follow naming convention: `component-name.css`
+3. Include component-specific CSS variables
+4. Add responsive considerations
+5. Update this documentation
 
-## 🔄 Migration Notes
+### Modifying Existing Styles
+1. **Layout changes**: Edit `base/layout.css`
+2. **Color/spacing**: Update `base/variables.css`
+3. **Component styles**: Edit respective component file
+4. **Core UI**: Modify `style.css` (gradually migrate to components)
 
-This reorganization extracts styles from the original monolithic `style.css` file:
-- **Tables**: Moved to `components/tables.css`
-- **Glass Buttons**: Cleaned and moved to `components/glass-buttons.css`
-- **Code Blocks**: Extracted to `components/code-blocks.css`
-- **Typography**: Separated to `base/typography.css`
-- **Variables**: Organized in `base/variables.css`
+### Performance Considerations
+- Use CSS custom properties for theming
+- Minimize specificity conflicts
+- Leverage CSS containment where possible
+- Optimize for mobile-first loading
 
-The main `style.css` now focuses on core application layout and UI components.
+## 🔄 Migration Status
+
+This architecture represents an ongoing migration from a monolithic CSS structure:
+
+### ✅ Completed
+- Table styles → `components/tables.css`
+- Glass buttons → `components/glass-buttons.css`
+- Code blocks → `components/code-blocks.css`
+- Base layout → `base/layout.css`
+- Typography → `base/typography.css`
+
+### 🚧 In Progress
+- Chat input → `components/chat-input.css`
+- Chat features → `components/chat-features.css`
+- Conversation styles (in `style.css`)
+
+### 📋 Planned
+- Modal system → `components/modals.css`
+- Navigation → `components/navigation.css`
+- Sidebar → `components/sidebar.css`
+
+## 🌍 Browser Support
+
+- **Chrome**: 80+
+- **Firefox**: 75+
+- **Safari**: 13+
+- **Edge**: 80+
+- **Mobile**: iOS 13+, Android 8+
+
+Optimized for modern browsers with CSS Grid, Flexbox, and backdrop-filter support.

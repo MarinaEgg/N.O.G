@@ -1564,6 +1564,7 @@ font {
 /* Styles pour les bulles vidéo YouTube avec effet frosted glass */
 .video-sources-container {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   gap: 12px;
   align-items: flex-start;

@@ -122,19 +122,56 @@
   width: 50%;
 }
 
-/* Sidebar Toggle Button */
+/* ========== SIDEBAR PUSH MENU ========== */
+.conversations {
+  position: fixed;
+  top: 0;
+  left: -280px; /* Cachée par défaut */
+  width: 280px;
+  height: 100vh;
+  background-color: var(--light-gray);
+  border-radius: 0 8px 8px 0;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  padding: var(--section-gap);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  overflow-y: auto;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+}
+
+/* État ouvert de la sidebar */
+body.sidebar-open .conversations {
+  left: 0;
+}
+
+/* ZONE DE CHAT avec effet push */
+.chat-main-container {
+  margin-left: 0;
+  transition: all 0.3s ease;
+  min-height: 100vh;
+}
+
+body.sidebar-open .chat-main-container {
+  margin-left: 280px; /* Décalage quand sidebar ouverte */
+}
+
+/* Bouton toggle amélioré */
 .sidebar-toggle {
   position: fixed;
   top: 20px;
   left: 20px;
   z-index: 1001;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   background: var(--light-gray);
   border: 1px solid var(--blur-border);
-  border-radius: 8px;
+  border-radius: 50%;
   cursor: pointer;
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -142,8 +179,15 @@
   transition: all 0.3s ease;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+.sidebar-toggle:hover {
+  background: var(--light-gray-hover);
+  transform: scale(1.05);
+}
+
+/* Animation hamburger vers X */
 .sidebar-toggle span {
   width: 20px;
   height: 2px;
@@ -152,12 +196,6 @@
   border-radius: 1px;
 }
 
-.sidebar-toggle:hover {
-  background: var(--light-gray-hover);
-  transform: scale(1.05);
-}
-
-/* Hamburger animation */
 body.sidebar-open .sidebar-toggle span:nth-child(1) {
   transform: rotate(45deg) translate(5px, 5px);
 }
@@ -170,74 +208,43 @@ body.sidebar-open .sidebar-toggle span:nth-child(3) {
   transform: rotate(-45deg) translate(7px, -6px);
 }
 
-.conversations {
-  margin: 0;
-  max-width: 260px;
-  min-width: 0;
-  padding: var(--section-gap);
-
-  background-color: var(--light-gray);
-  border-radius: 8px;
-
-  overflow-y: auto;
-  height: calc(100vh - 16px);
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 16px;
-
-  transition: all 0.3s ease;
-
-  @media screen and (max-width: 990px) {
-    display: none;
+/* Responsive pour mobile */
+@media (max-width: 990px) {
+  .conversations {
+    width: 100vw;
+    left: -100vw;
+  }
+  
+  body.sidebar-open .conversations {
+    left: 0;
+  }
+  
+  body.sidebar-open .chat-main-container {
+    margin-left: 0; /* Pas de push sur mobile */
+  }
+  
+  .sidebar-toggle {
+    width: 45px;
+    height: 45px;
   }
 }
 
-/* Collapsed sidebar state */
-body.sidebar-collapsed .conversations {
-  transform: translateX(-100%);
-  position: fixed;
+/* Correction barre de chat responsive */
+.user-input-container {
   left: 0;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-}
-
-body.sidebar-collapsed .sidebar-toggle {
-  display: flex;
-}
-
-/* Expanded sidebar state */
-body.sidebar-open .conversations {
-  transform: translateX(0);
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-}
-
-body.sidebar-open .sidebar-toggle {
-  display: flex;
-}
-
-/* Initial state - sidebar collapsed by default */
-body {
   transition: all 0.3s ease;
 }
 
-body:not(.sidebar-open):not(.sidebar-collapsed) .conversations {
-  transform: translateX(-100%);
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+body.sidebar-open .user-input-container {
+  left: 280px;
+  right: 0;
+  width: auto;
 }
 
-body:not(.sidebar-open):not(.sidebar-collapsed) .sidebar-toggle {
-  display: flex;
+@media (max-width: 990px) {
+  body.sidebar-open .user-input-container {
+    left: 0;
+  }
 }
 
 ol li {

@@ -119,87 +119,84 @@
   </head>
   <body>
     <div class="gradient"></div>
-    <div class="row">
-      <button id="sidebar-toggle" class="sidebar-toggle">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <div class="conversations shadow" id="conversations">
-        <div>
-          <div style="text-align: center" class="subtitles">
-            <a onclick="openLibrary()" id="onboardingButton" class="media-title"
-              >AGENTS</a
-            >
-            <div class="separator"></div>
-          </div>
-          <div class="top">
-            <button class="new_convo soft-shadow" onclick="new_conversation()">
-              <i class="fa-regular fa-plus"></i>
-              <div style="color: #2f2f2e">Nouvelle conversation</div>
-            </button>
-            <div class="spinner"></div>
-          </div>
-          <div>
-            <button
-              onclick="delete_conversations()"
-              class="new_convo soft-shadow"
-            >
-              <i class="fa-regular fa-trash"></i>
-              <span>Supprimer les conversations</span>
-            </button>
-          </div>
-        </div>
-        <!-- SUPPRESSION DU LOGO ET DES LIENS FAQ/DOCUMENTATION -->
-      </div>
 
+    <!-- Bouton toggle sidebar -->
+    <button id="sidebar-toggle" class="sidebar-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="conversations shadow" id="conversations">
+      <div>
+        <div style="text-align: center" class="subtitles">
+          <a onclick="openLibrary()" id="onboardingButton" class="media-title">AGENTS</a>
+          <div class="separator"></div>
+        </div>
+        <div class="top">
+          <button class="new_convo soft-shadow" onclick="new_conversation()">
+            <i class="fa-regular fa-plus"></i>
+            <div style="color: #2f2f2e">Nouvelle conversation</div>
+          </button>
+          <div class="spinner"></div>
+        </div>
+        <div>
+          <button onclick="delete_conversations()" class="new_convo soft-shadow">
+            <i class="fa-regular fa-trash"></i>
+            <span>Supprimer les conversations</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone de chat principale avec effet push -->
+    <div class="chat-main-container">
       <div class="conversation disable-scrollbars">
         <div class="top-navigation-container"></div>
-
+        
         <div class="stop_generating stop_generating-hidden">
           <button id="cancelButton">
             <span>Arrêter la génération</span>
             <i class="fa-regular fa-stop"></i>
           </button>
         </div>
-
+        
         <div>
           <div id="messages"></div>
         </div>
-
-        <div>
-          <div class="user-input-container">
-            <div class="user-input">
-              <div id="box-input" class="box input-box">
-                <textarea
-                  id="message-input"
-                  placeholder="Posez votre question à nOg"
-                  rows="1"
-                ></textarea>
-                <div class="input-controls">
-                  <div></div>
-                  <div id="send-button">
-                    <i class="fa-solid fa-arrow-up"></i>
-                  </div>
+        
+        <div class="user-input-container">
+          <div class="user-input">
+            <div id="box-input" class="box input-box">
+              <textarea id="message-input" placeholder="Posez votre question à nOg" rows="1"></textarea>
+              <div class="input-controls">
+                <div></div>
+                <div id="send-button">
+                  <i class="fa-solid fa-arrow-up"></i>
                 </div>
               </div>
             </div>
           </div>
-
-          <select hidden name="model" id="model">
-            <option value="Eggon-V1">Eggon-V1.6</option>
-          </select>
         </div>
+        
+        <select hidden name="model" id="model">
+          <option value="Eggon-V1">Eggon-V1.6</option>
+        </select>
       </div>
-      <div class="mobile-sidebar">
-        <i class="fa-solid fa-bars"></i>
-      </div>
-      <div id="librarySideNav" class="sidenav">
-        <div class="library-side-nav-content"></div>
-      </div>
-      <div id="LinksSideNav" class="sidenav">
-        <div class="links-side-nav-content"></div>
-      </div>
+    </div>
+
+    <!-- Mobile sidebar (conserver existant) -->
+    <div class="mobile-sidebar">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+
+    <!-- Sidebars pour library et links (conserver existant) -->
+    <div id="librarySideNav" class="sidenav">
+      <div class="library-side-nav-content"></div>
+    </div>
+    <div id="LinksSideNav" class="sidenav">
+      <div class="links-side-nav-content"></div>
     </div>
   </body>
 </html>

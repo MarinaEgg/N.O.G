@@ -1595,7 +1595,7 @@ font {
   min-height: 70px;
   width: 240px;
   flex-shrink: 0;
-  animation: 0.4s ease-out fadeInUp;
+  animation: 0.4s ease-out fadeInUp forwards;
   
   /* Effet de profondeur avec pseudo-élément */
   position: relative;

@@ -811,8 +811,43 @@ const message_id = () => {
   return BigInt(`0b${unix}${random_bytes}`).toString();
 };
 
+// Sidebar toggle functionality
+function hasClass(ele, cls) {
+  return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+}
+
+function addClass(ele, cls) {
+  if (!hasClass(ele, cls)) ele.className += " " + cls;
+}
+
+function removeClass(ele, cls) {
+  if (hasClass(ele, cls)) {
+    var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+    ele.className = ele.className.replace(reg, ' ');
+  }
+}
+
+function toggleSidebar() {
+  var body = document.getElementsByTagName('body')[0];
+  if (!hasClass(body, "sidebar-open")) {
+    addClass(body, "sidebar-open");
+    removeClass(body, "sidebar-collapsed");
+  } else {
+    addClass(body, "sidebar-collapsed");
+    removeClass(body, "sidebar-open");
+  }
+}
+
+function initSidebarToggle() {
+  const toggleButton = document.getElementById("sidebar-toggle");
+  if (toggleButton) {
+    toggleButton.addEventListener("click", toggleSidebar);
+  }
+}
+
 window.onload = async () => {
   load_settings_localstorage();
+  initSidebarToggle();
 
   conversations = 0;
   for (let i = 0; i < localStorage.length; i++) {

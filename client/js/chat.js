@@ -811,7 +811,9 @@ const message_id = () => {
   return BigInt(`0b${unix}${random_bytes}`).toString();
 };
 
-// Sidebar toggle functionality
+// ========== SIDEBAR PUSH MENU FUNCTIONALITY ==========
+
+// Fonctions utilitaires pour les classes
 function hasClass(ele, cls) {
   return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
 }
@@ -827,6 +829,7 @@ function removeClass(ele, cls) {
   }
 }
 
+// Fonction de toggle de la sidebar
 function toggleSidebar() {
   var body = document.getElementsByTagName('body')[0];
   if (!hasClass(body, "sidebar-open")) {
@@ -838,6 +841,7 @@ function toggleSidebar() {
   }
 }
 
+// Initialisation du toggle sidebar
 function initSidebarToggle() {
   const toggleButton = document.getElementById("sidebar-toggle");
   if (toggleButton) {

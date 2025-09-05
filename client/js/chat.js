@@ -115,7 +115,14 @@ function openLibrary() {
   
   console.log("🎨 Setting sidebar styles...");
   
-  // AJOUTER cette ligne :
+  // Fermer la sidebar si elle est ouverte
+  var body = document.getElementsByTagName('body')[0];
+  if (hasClass(body, "sidebar-open")) {
+    removeClass(body, "sidebar-open");
+    addClass(body, "sidebar-collapsed");
+  }
+  
+  // Ajouter la classe onboarding-open
   document.body.classList.add('onboarding-open');
   
   // Afficher le sidebar avec transitions
@@ -924,12 +931,24 @@ function removeClass(ele, cls) {
 // Fonction de toggle de la sidebar
 function toggleSidebar() {
   var body = document.getElementsByTagName('body')[0];
+  
+  // Vérifier si la page onboarding est ouverte
+  if (hasClass(body, "onboarding-open")) {
+    // Ne pas modifier la sidebar si onboarding est ouvert
+    return;
+  }
+  
   if (!hasClass(body, "sidebar-open")) {
     addClass(body, "sidebar-open");
     removeClass(body, "sidebar-collapsed");
   } else {
     addClass(body, "sidebar-collapsed");
     removeClass(body, "sidebar-open");
+  }
+  
+  // Ajuster les éléments après le toggle
+  if (typeof adjustElementsForSidebar === 'function') {
+    adjustElementsForSidebar();
   }
 }
 

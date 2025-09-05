@@ -70,7 +70,7 @@
   padding: 10px 15px;
   background-color: var(--light-gray);
   border-radius: 8px;
-  border: 1px solid var(--colour-3);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   min-height: var(--chat-container-min-height);
   height: var(--chat-container-min-height);
   transition: var(--chat-transition);

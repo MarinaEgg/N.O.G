@@ -70,7 +70,7 @@
   padding: 10px 15px;
   background-color: var(--light-gray);
   border-radius: 8px;
-  border: 1px solid var(--blur-border);
+  border: 1px solid var(--colour-3);
   min-height: var(--chat-container-min-height);
   height: var(--chat-container-min-height);
   transition: var(--chat-transition);
@@ -220,7 +220,7 @@
 
 .input-box:focus-within {
   border-color: var(--colour-3);
-  box-shadow: 0 0 0 2px rgba(47, 47, 46, 0.1);
+  box-shadow: 0 0 0 2px rgba(47, 47, 46, 0.2);
 }
 
 /* Styles pour les états désactivés */

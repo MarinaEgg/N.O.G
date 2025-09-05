@@ -1,0 +1,33 @@
+/* ========== CSS CUSTOM PROPERTIES (VARIABLES) ========== */
+
+:root {
+  /* Color palette */
+  --colour-1: #ffffff;
+  --colour-2: #f3f4e5;
+  --colour-3: #2f2f2e;
+  --colour-4: #f9e479;
+  --colour-5: #2f2f2e;
+  --colour-6: #2f2f2e;
+
+  /* UI colors */
+  --light-gray: #f7f7f7;
+  --light-gray-hover: #f1f1f1;
+  --gray: #d5d5d5;
+  --yellow: #F9E479;
+
+  /* Theme colors */
+  --accent: #ffffff;
+  --blur-bg: #ffffff;
+  --blur-border: rgba(0, 0, 0, 0.251);
+  --blur-input: #000000;
+  --conversations: #000000;
+
+  /* Layout */
+  --section-gap: 25px;
+  --body-gap: 25px;
+  --border-radius-1: 8px;
+  --menu-percentage: 80%;
+
+  /* Typography */
+  --font-1: "Inter";
+}

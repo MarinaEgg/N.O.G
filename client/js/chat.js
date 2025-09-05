@@ -41,8 +41,7 @@ const greetingMessages = {
 };
 
 hljs.addPlugin(new CopyButtonPlugin());
-document.getElementsByClassName("library-side-nav-content")[0].innerHTML =
-  onBoardingContent();
+// Initialisation du contenu des agents sera faite lors de l'appel à openAgents()
 
 // Les fonctions de redimensionnement sont maintenant gérées par ChatInputManager
 // Fonctions de compatibilité maintenues pour l'ancien code
@@ -58,55 +57,37 @@ function resetChatBarHeight() {
   }
 }
 
-function openLibrary() {
-  console.log("🔍 DEBUG: openLibrary called");
-  
-  // Vérification des éléments DOM
-  const librarySideNav = document.getElementById("librarySideNav");
-  const sideNavContent = document.querySelector(".library-side-nav-content");
-  const menu = document.getElementById("menu");
-  
-  console.log("🔍 DOM elements check:");
-  console.log("- librarySideNav:", librarySideNav);
-  console.log("- library-side-nav-content:", sideNavContent);
-  console.log("- menu element:", menu);
-  
-  console.log("🔍 Function check:");
-  console.log("- onBoardingContent exists:", typeof onBoardingContent !== 'undefined');
-  
-  if (!librarySideNav) {
-    console.error("❌ Element librarySideNav not found!");
-    return;
-  }
-  
-  if (!sideNavContent) {
-    console.error("❌ Element library-side-nav-content not found!");
-    return;
-  }
-  
-  console.log("✅ All DOM elements found, proceeding...");
-  
-  // Essayer de charger le contenu
-  try {
-    console.log("📄 Loading onboarding content...");
-    sideNavContent.innerHTML = onBoardingContent();
-    console.log("✅ Content loaded successfully");
-  } catch (error) {
-    console.error("❌ Error loading onboarding content:", error);
-    sideNavContent.innerHTML = `
-      <div class="side-nav-header">
-        <a onClick="closeLibrary()" style="color: #2f2f2e; text-decoration: none; cursor: pointer; display: flex; align-items: center; padding: 10px;">
-          <i class="fa fa-arrow-left" style="margin-right: 5px;"></i> 
-          Retour à la conversation
-        </a>
-        <img style="width: 25px" src="/assets/img/nog_logo_no_text.png" alt="logo" />
-      </div>
-      <div style="padding: 20px; text-align: center;">
-        <h2>Agents Spécialisés</h2>
-        <p>Le contenu de l'onboarding est en cours de chargement...</p>
-        <div id="debug-info">
+function openAgents() { 
+  console.log("🤖 Opening Agents page"); 
+   
+  const librarySideNav = document.getElementById("librarySideNav"); 
+  const body = document.getElementsByTagName('body')[0]; 
+   
+  // Fermer la sidebar principale si ouverte 
+  if (hasClass(body, "sidebar-open")) { 
+    removeClass(body, "sidebar-open"); 
+    addClass(body, "sidebar-collapsed"); 
+  } 
+   
+  // Marquer comme ouvert 
+  document.body.classList.add('agents-open'); 
+   
+  // Générer le contenu de la page agents 
+  librarySideNav.innerHTML = generateAgentsHTML(); 
+   
+  // Afficher avec transition 
+  librarySideNav.style.width = "100vw"; 
+  librarySideNav.style.display = "block"; 
+   
+  // Initialiser les événements après affichage 
+  setTimeout(() => { 
+    initializeAgentsPage(); 
+    if (typeof adjustElementsForSidebar === 'function') { 
+      adjustElementsForSidebar(); 
+    } 
+  }, 100); 
+}
           <p><strong>Debug info:</strong></p>
-          <p>onBoardingContent function: ${typeof onBoardingContent !== 'undefined' ? 'Found' : 'Missing'}</p>
           <p>Error: ${error.message}</p>
         </div>
       </div>
@@ -122,8 +103,8 @@ function openLibrary() {
     addClass(body, "sidebar-collapsed");
   }
   
-  // Ajouter la classe onboarding-open
-  document.body.classList.add('onboarding-open');
+  // Ajouter la classe agents-open
+  document.body.classList.add('agents-open');
   
   // Afficher le sidebar avec transitions
   librarySideNav.style.width = "100vw";
@@ -134,14 +115,6 @@ function openLibrary() {
   
   // Rendre le menu visible après un délai
   setTimeout(() => {
-    const menuElement = document.getElementById("menu");
-    if (menuElement) {
-      menuElement.style.visibility = "visible";
-      console.log("✅ Menu visibility set to visible");
-    } else {
-      console.log("⚠️ Menu element not found after timeout");
-    }
-    
     // Ajuster pour la sidebar
     if (typeof adjustElementsForSidebar === 'function') {
       adjustElementsForSidebar();
@@ -151,15 +124,120 @@ function openLibrary() {
     }
   }, 100);
   
-  console.log("🎉 openLibrary completed");
+  console.log("🎉 openAgents completed");
 }
 
-function closeLibrary() {
-  // AJOUTER cette ligne :
-  document.body.classList.remove('onboarding-open');
+// Fonction pour sélectionner un agent
+function selectAgent(agentId) {
+  const agent = agentsData[agentId];
+  if (!agent) {
+    console.error("❌ Agent non trouvé:", agentId);
+    return;
+  }
   
-  document.getElementById("librarySideNav").style.width = "0vw";
-  document.getElementById("menu").style.visibility = "hidden";
+  console.log("✅ Agent sélectionné:", agent.title);
+  
+  // Ajouter un message dans la conversation
+  message_input.value = `Je souhaite utiliser l'agent ${agent.title} pour ${agent.context.toLowerCase()}`;
+  
+  // Fermer la page des agents
+  closeAgents();
+  
+  // Optionnel : déclencher l'envoi automatique après un court délai
+  // setTimeout(() => handle_ask(), 500);
+}
+
+function generateAgentsHTML() { 
+  const selectedAgents = getSelectedAgents(); 
+  const selectedCount = selectedAgents.length; 
+  
+  let html = ` 
+    <div class="agents-container"> 
+      <div class="agents-header"> 
+        <button class="back-button" onclick="closeAgents()"> 
+          <i class="fa fa-arrow-left"></i> 
+          Retour à la conversation 
+        </button> 
+        <div class="agents-header-content"> 
+          <h1>Sélectionnez vos Agents IA</h1> 
+          <div class="agents-counter"> 
+            <span id="selected-count">${selectedCount}</span> agents sélectionnés 
+          </div> 
+        </div> 
+      </div> 
+      
+      <div class="agents-grid"> 
+  `; 
+  
+  Object.values(agentsData).forEach((agent, index) => { 
+    const isSelected = selectedAgents.includes(agent.id); 
+    html += ` 
+      <div class="agent-card" style="--index: ${index}" data-agent-id="${agent.id}"> 
+        <div class="agent-card-header"> 
+          <div class="agent-icon" style="background: ${agent.color}">${agent.icon}</div> 
+          <label class="agent-checkbox"> 
+            <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleAgent('${agent.id}')"> 
+            <span class="checkmark"></span> 
+          </label> 
+        </div> 
+        <div class="agent-content"> 
+          <h3 class="agent-title">${agent.title}</h3> 
+          <div class="agent-context">${agent.context}</div> 
+          <p class="agent-description">${agent.body}</p> 
+        </div> 
+      </div> 
+    `; 
+  }); 
+  
+  html += ` 
+      </div> 
+    </div> 
+  `; 
+  
+  return html; 
+} 
+
+function initializeAgentsPage() { 
+  // Animation des cartes 
+  const cards = document.querySelectorAll('.agent-card'); 
+  cards.forEach((card, index) => { 
+    setTimeout(() => { 
+      card.classList.add('animate-in'); 
+    }, index * 100); 
+  }); 
+} 
+
+function toggleAgent(agentId) { 
+  let selectedAgents = getSelectedAgents(); 
+  
+  if (selectedAgents.includes(agentId)) { 
+    selectedAgents = selectedAgents.filter(id => id !== agentId); 
+  } else { 
+    selectedAgents.push(agentId); 
+  } 
+  
+  localStorage.setItem('selectedAgents', JSON.stringify(selectedAgents)); 
+  
+  // Mettre à jour le compteur 
+  document.getElementById('selected-count').textContent = selectedAgents.length; 
+} 
+
+function getSelectedAgents() { 
+  const saved = localStorage.getItem('selectedAgents'); 
+  return saved ? JSON.parse(saved) : []; 
+} 
+
+function saveSelectedAgents() { 
+  // La sauvegarde se fait déjà dans toggleAgent() 
+  console.log('Agents sélectionnés sauvegardés:', getSelectedAgents()); 
+}
+
+function closeAgents() { 
+  document.body.classList.remove('agents-open'); 
+  document.getElementById("librarySideNav").style.width = "0vw"; 
+  
+  // Sauvegarder les agents sélectionnés 
+  saveSelectedAgents(); 
 }
 
 async function openLinks(videoIdsParam, titlesParams) {
@@ -1047,8 +1125,20 @@ window.onload = async () => {
     }
   });
 
-  // Auto-resize en temps réel sur input
-  message_input.addEventListener(`input`, (evt) => {
+  // Auto-resize en temps réel sur input et détection @mention
+  message_input.addEventListener('input', (e) => {
+    const text = e.target.value;
+    const cursorPosition = e.target.selectionStart;
+    const textBeforeCursor = text.substring(0, cursorPosition);
+    const lastWord = textBeforeCursor.split(' ').pop();
+    
+    if (lastWord.startsWith('@') && lastWord.length > 1) {
+      showAgentSuggestions(lastWord.slice(1), cursorPosition);
+    } else {
+      hideAgentSuggestions();
+    }
+    
+    // Conserver la fonctionnalité de redimensionnement existante
     resizeTextarea(message_input);
   });
 
@@ -1086,6 +1176,70 @@ document.querySelector(".mobile-sidebar").addEventListener("click", (event) => {
 
   window.scrollTo(0, 0);
 });
+
+// Fonctions pour le système de suggestion d'agents avec @mention
+function showAgentSuggestions(query, cursorPosition) {
+  const selectedAgents = getSelectedAgents();
+  if (selectedAgents.length === 0) return;
+  
+  const filtered = selectedAgents
+    .map(id => agentsData[id])
+    .filter(agent => agent.title.toLowerCase().includes(query.toLowerCase()));
+  
+  if (filtered.length === 0) {
+    hideAgentSuggestions();
+    return;
+  }
+  
+  let suggestionsHTML = '<div class="agent-suggestions">';
+  filtered.forEach(agent => {
+    suggestionsHTML += `
+      <div class="agent-suggestion" onclick="insertAgent('${agent.id}')">
+        <span class="agent-suggestion-icon">${agent.icon}</span>
+        <span class="agent-suggestion-title">${agent.title}</span>
+      </div>
+    `;
+  });
+  suggestionsHTML += '</div>';
+  
+  // Afficher les suggestions sous la barre de chat
+  const inputContainer = document.querySelector('.user-input-container');
+  let suggestionsContainer = document.querySelector('.agent-suggestions-container');
+  
+  if (!suggestionsContainer) {
+    suggestionsContainer = document.createElement('div');
+    suggestionsContainer.className = 'agent-suggestions-container';
+    inputContainer.appendChild(suggestionsContainer);
+  }
+  
+  suggestionsContainer.innerHTML = suggestionsHTML;
+  suggestionsContainer.style.display = 'block';
+}
+
+function hideAgentSuggestions() {
+  const container = document.querySelector('.agent-suggestions-container');
+  if (container) {
+    container.style.display = 'none';
+  }
+}
+
+function insertAgent(agentId) {
+  const agent = agentsData[agentId];
+  const currentText = message_input.value;
+  const cursorPosition = message_input.selectionStart;
+  const textBeforeCursor = currentText.substring(0, cursorPosition);
+  const textAfterCursor = currentText.substring(cursorPosition);
+  
+  // Remplacer le @query par @AgentName
+  const words = textBeforeCursor.split(' ');
+  words[words.length - 1] = `@${agent.title}`;
+  
+  const newText = words.join(' ') + textAfterCursor;
+  message_input.value = newText;
+  
+  hideAgentSuggestions();
+  message_input.focus();
+}
 
 const register_settings_localstorage = async () => {
   settings_ids = ["model"];
@@ -1156,178 +1310,109 @@ colorThemes.forEach((themeOption) => {
 
 document.onload = setTheme();
 
-// ONBOARDING
+// AGENTS
 
 hljs.addPlugin(new CopyButtonPlugin());
 
-function onBoardingContent() {
-  return `
-    <div class="side-nav-header" id="sideNavHeader">
-      <a onClick="closeLibrary()"
-        style="
-          color: #2f2f2e;
-          text-decoration: none;
-          display: inline-block;
-          margin-left: 10px;
-          align-items: center;
-          cursor: pointer">
-          <div class="fa fa- fa-arrow-left" style="margin-right: 5px;"></div>
-                  Retour à la conversation
-      </a>
-      <img
-        style="width: 25px"
-        src="/assets/img/nog_logo_no_text.png"
-        alt="logo"
-      />
-
-    </div>
-
-    <div class="row">
-      <div id="menu" style="width: 40%"></div>
-
-      <div class="box" id="video-panel" style="border: none; width: 70%">
-        <div style="display: block; justify-content: left; align-items: center">
-          <iframe
-            id="video-iframe"
-            width="800"
-            height="400"
-            src="https://www.youtube.com/embed/4nlMKhcYLNM"
-            frameborder="0"
-            allowfullscreen
-          ></iframe>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-const onboarding_sections = [
-  {
-    name: "iManage Work",
-    "sub-sections": [],
-    img_path: "/assets/img/imanage_onboarding.png",
-  },
-  {
-    name: "iManage Closing Folders",
-    "sub-sections": [
-      { name: "Créer un projet & Importer un agenda", video_id: "4nlMKhcYLNM" },
-      {
-        name: "Importer un agenda depuis Word ou Excel",
-        video_id: "BvBPAi6an_c",
-      },
-      { name: "Modifier l'agenda", video_id: "PypN_G-Wy_I" },
-      { name: "Ajouter un préambule", video_id: "94q6QoMycvA" },
-      {
-        name: "Importer des fichiers individuellement",
-        video_id: "HX_FQLxq4Aw",
-      },
-      {
-        name: "Importer plusieurs fichiers à la fois",
-        video_id: "2DO9nbAcjVs",
-      },
-      { name: "Configurez vos pages de signatures", video_id: "M66Ihcvn1-k" },
-      { name: "Générateur de pages de signatures", video_id: "rgo5SuQUZ8g" },
-      {
-        name: "Compilez vos paquets de signatures dans un PDF",
-        video_id: "8_xusu7ddx8",
-      },
-      {
-        name: "Compilez vos paquets de signatures dans DocuSign",
-        video_id: "cc0n-Rffcws",
-      },
-      { name: "Comment utiliser des variables", video_id: "5RmCLCxwknA" },
-      { name: "Comment dissocier les variables", video_id: "pI5Puq08NAg" },
-      { name: "Finaliser les documents", video_id: "RM3FUhj0Arc" },
-    ],
-    img_path: "/assets/img/imanage_onboarding.png",
-  },
-  {
-    name: "iManage Work 10",
-    "sub-sections": [],
-    img_path: "/assets/img/imanage_onboarding.png",
-  },
-  {
-    name: "iManage Share",
-    "sub-sections": [],
-    img_path: "/assets/img/imanage_onboarding.png",
-  },
-  {
-    name: "iManage Drive",
-    "sub-sections": [],
-    img_path: "/assets/img/imanage_onboarding.png",
-  },
-  {
-    name: "Litera",
-    "sub-sections": [],
-    img_path: "/assets/img/litera_onboarding.png",
-  },
-  {
-    name: "BigHand",
-    "sub-sections": [],
-    img_path: "/assets/img/bighand_onboarding.png",
-  },
-  { name: "AI", "sub-sections": [], img_path: "/assets/img/ai_onboarding.png" },
-  {
-    name: "Power BI",
-    "sub-sections": [],
-    img_path: "/assets/img/powerbi_onboarding.png",
-  },
-];
-
-const menu = document.getElementById("menu");
-
-// loop over sections
-
-for (var i = 0; i < onboarding_sections.length; i++) {
-  const section_name = onboarding_sections[i]["name"];
-  const img_url = onboarding_sections[i]["img_path"];
-  const div_section_id = `div_${section_name}`;
-  const button_section_id = `div_${section_name}`;
-  menu.innerHTML += `<button id="button_${section_name}" type="button" class="collapsible onboarding-section"><img src="${img_url}" style="float:left; margin-right:0.5em; width:30px; vertical-align: middle;">${section_name}</button>`;
-  menu.innerHTML += `<div class="onboard-collapsible-content" id="div_${section_name}"></div>`;
-  const section = document.getElementById(div_section_id);
-  // loop over sub sections
-  const sub_sections = onboarding_sections[i]["sub-sections"];
-  const n_sub_sections = sub_sections.length;
-  if (n_sub_sections > 0) {
-    for (var j = 0; j < n_sub_sections; j++) {
-      const sub_section_name = sub_sections[j]["name"];
-      const video_id = sub_sections[j]["video_id"];
-      const num = j < 10 ? `0${j + 1}` : `${j + 1}`;
-      section.innerHTML += `<button id="${video_id}" data-video-id="${video_id}" class="video-button onboarding-subsection" style="background: white; display:inline-block"> ${num}- ${sub_section_name} </button>`;
-    }
-  } else {
-    // no need to make the section button collapsible
-    document.getElementById(button_section_id).classList.remove("collapsible");
-  }
-}
-
-// change video on click
-var video_buttons = document.getElementsByClassName("video-button");
-var l;
-for (l = 0; l < video_buttons.length; l++) {
-  const button = video_buttons[l];
-  button.addEventListener("click", (event) => {
-    const videoPlayer = document.getElementById(`video-iframe`);
-    const videoId = button.getAttribute("data-video-id");
-    videoPlayer.src = `https://www.youtube.com/embed/${videoId}`;
-  });
-}
-
-// magic behind collapsibles
-var coll = document.getElementsByClassName("collapsible");
-var i;
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function () {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-      content.style.display = "none";
-    } else {
-      content.style.display = "block";
-    }
-  });
-}
+// Données des agents
+const agentsData = { 
+  "contractAnalysis": { 
+    "id": "contractAnalysis", 
+    "title": "Agent d'Analyse de Risques Contractuels", 
+    "context": "Juridique / Révision des Risques", 
+    "body": "Analyse les contrats et accords juridiques pour identifier les clauses clés, les risques potentiels et les incohérences dans plusieurs documents, dans le cadre de fusions, d'acquisitions et d'autres transactions. Fournit un résultat d'analyse clair avec des explications et des recommandations exploitables.", 
+    "color": "#4A90E2",
+    "icon": "<i class='fa fa-balance-scale'></i>"
+  }, 
+  "caseLawResearch": { 
+    "id": "caseLawResearch",  
+    "title": "Agent de Stratégie Basé sur les Précédents", 
+    "context": "Juridique / Recherche", 
+    "body": "Améliore la recherche juridique en identifiant et récupérant dynamiquement des précédents pertinents, des textes de loi, etc, pour apporter aux avocats des recommandations stratégiques fondées sur l'analyse jurisprudentielle et le contexte juridictionnel.", 
+    "color": "#3D5A80",
+    "icon": "<i class='fa fa-gavel'></i>"
+  }, 
+  "meetingPrep": { 
+    "id": "meetingPrep", 
+    "title": "Agent de Réunion",  
+    "context": "Entreprise / Organisationnel", 
+    "body": "Analyse les notes de réunion, identifie les points clés et transforme automatiquement décisions et discussions en tâches actionnables, avec attribution des responsables et définition des échéances.", 
+    "color": "#2ECC71",
+    "icon": "<i class='fa fa-users'></i>"
+  }, 
+  "wikiBuilder": { 
+    "id": "wikiBuilder", 
+    "title": "Agent de Gestion des Connaissances Internes", 
+    "context": "Entreprise / Gestion des Connaissances",  
+    "body": "Crée et met à jour un type de wikipedia interne privé en analysant les documents internes et les échanges autorisés, tout en attribuant automatiquement des étiquettes et des catégories aux contenus web internes.", 
+    "color": "#9B59B6",
+    "icon": "<i class='fa fa-book'></i>"
+  }, 
+  "auditTrail": { 
+    "id": "auditTrail", 
+    "title": "Agent d'Amélioration de Conception d'instructions IA", 
+    "context": "IA / Amélioration Continue", 
+    "body": "Analyse les intructions d'IA utilisées, identifie les points faibles et génére des versions optimisées pour améliorer la précision, la clarté et la cohérence des réponses des modèles IA.", 
+    "color": "#F39C12",
+    "icon": "<i class='fa fa-cogs'></i>"
+  }, 
+  "supplierCompliance": { 
+    "id": "supplierCompliance", 
+    "title": "Agent de Conformité et politiques", 
+    "context": "Juridique / Recherche", 
+    "body": "Consulte les documents internes et externes pour garantir le respect des obligations et réduire le temps des équipes dédié aux relectures manuelles.", 
+    "color": "#E74C3C",
+    "icon": "<i class='fa fa-check-circle'></i>"
+  }, 
+  "quotationAgent": { 
+    "id": "quotationAgent",  
+    "title": "Agent de Génération de Devis", 
+    "context": "Ventes / Devis B2B", 
+    "body": "Génère et envoie des devis professionnels prêts à être transmis aux clients, en se basant sur les règles tarifaires définies et les informations clients.", 
+    "color": "#16A085",
+    "icon": "<i class='fa fa-file-invoice-dollar'></i>"
+  }, 
+  "clientOnboarding": { 
+    "id": "clientOnboarding", 
+    "title": "Agent de Veille Concurrentielle",  
+    "context": "Stratégie / Intelligence Marché", 
+    "body": "Surveille vos concurrents, analyse leurs stratégies et offres, et identifie les opportunités de marché pour générer un rapport clair et exploitable.", 
+    "color": "#8E44AD",
+    "icon": "<i class='fa fa-binoculars'></i>"
+  }, 
+  "techIntelligence": { 
+    "id": "techIntelligence", 
+    "title": "Agent de Veille Technologique", 
+    "context": "R&D / Stratégie",  
+    "body": "Fournit chaque semaine un résumé des actualités et tendances clés dans le secteur technologique choisi, incluant les sources principales, points saillants et mises à jour réglementaires.", 
+    "color": "#3498DB",
+    "icon": "<i class='fa fa-microchip'></i>"
+  }, 
+  "rfpDrafting": { 
+    "id": "rfpDrafting", 
+    "title": "Agent de Gestion des Dépenses Juridiques", 
+    "context": "Direction Juridique Suisse / Finance", 
+    "body": "Analyse et contrôle des factures : vérification de la conformité avec l'Ordonnance suisse sur la comptabilité et la présentation des comptes (OCG), contrôle des taux horaires, détection d'anomalies, suivi budgétaire et prévision des charges. Production de recommandations et de rapports de conformité.", 
+    "color": "#D35400",
+    "icon": "<i class='fa fa-file-invoice'></i>"
+  }, 
+  "esgCompliance": { 
+    "id": "esgCompliance", 
+    "title": "Agent de Reporting Financier Interactif", 
+    "context": "Finance / Pilotage de Performance",  
+    "body": "Fournit un tableau de bord dynamique permettant d'évaluer la rentabilité par dossier, avocat ou client. Offre une interface conversationnelle en langage naturel (LLM) pour formuler des requêtes directes sur les données (ex. \"Montre-moi la marge sur nos dossiers de contentieux depuis janvier\"). L'agent s'intègre avec Power BI ou Tableau et s'inscrit dans un dispositif de pilotage de la performance financière et ESG.", 
+    "color": "#27AE60",
+    "icon": "<i class='fa fa-chart-line'></i>"
+  }, 
+  "dataPrivacyAudit": { 
+    "id": "dataPrivacyAudit", 
+    "title": "Agent de Conformité Fiscale", 
+    "context": "Conformité / Fiscalité", 
+    "body": "Aide les professionnels de la fiscalité à naviguer dans des réglementations fiscales complexes et évolutives à travers plusieurs juridictions, en assurant la conformité tout en identifiant des opportunités d'optimisation.", 
+    "color": "#7F8C8D",
+    "icon": "<i class='fa fa-shield-alt'></i>"
+  } 
+};
 
 // LINKS
 

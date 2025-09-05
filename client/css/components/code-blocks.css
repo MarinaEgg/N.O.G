@@ -1,0 +1,147 @@
+/* ========== CODE BLOCKS STYLES ========== */
+
+/* Inline code - no border styling */
+code {
+  font-family: "Inter Mono", monospace;
+  font-size: inherit;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  font-weight: inherit;
+}
+
+/* Code in pre blocks only */
+pre code {
+  font-family: "Inter Mono", monospace;
+  font-size: 14px;
+  background: transparent;
+  color: #2f2f2e;
+  padding: 20px;
+  border-radius: 0;
+  border: none;
+  display: block;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+  overflow-x: auto;
+}
+
+/* Pre blocks with frosted glass effect */
+pre {
+  margin: 16px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  /* Frosted glass effect on white background */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+pre::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.2) 0%, 
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ========== SYNTAX HIGHLIGHTING ========== */
+
+/* Styles for highlight.js with custom theme */
+.hljs {
+  background: transparent !important;
+  color: #2f2f2e !important;
+  padding: 20px !important;
+  border-radius: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  overflow-x: auto;
+}
+
+/* Custom syntax colors to remain readable on white background */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-link {
+  color: #d73a49 !important;
+  font-weight: 600;
+}
+
+.hljs-string,
+.hljs-title,
+.hljs-name,
+.hljs-type,
+.hljs-attribute,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition,
+.hljs-variable,
+.hljs-template-tag,
+.hljs-template-variable {
+  color: #032f62 !important;
+  font-weight: 500;
+}
+
+.hljs-comment,
+.hljs-quote,
+.hljs-deletion,
+.hljs-meta {
+  color: #6a737d !important;
+  font-style: italic;
+}
+
+.hljs-number,
+.hljs-regexp,
+.hljs-literal {
+  color: #005cc5 !important;
+  font-weight: 500;
+}
+
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-class .hljs-title {
+  color: #6f42c1 !important;
+  font-weight: 600;
+}
+
+.hljs-function .hljs-title {
+  color: #6f42c1 !important;
+  font-weight: 600;
+}
+
+.hljs-tag {
+  color: #22863a !important;
+}
+
+.hljs-attr {
+  color: #6f42c1 !important;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}

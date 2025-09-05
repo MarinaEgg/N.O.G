@@ -1,14 +1,18 @@
-/* ========== GESTIONNAIRE DE LA BARRE DE CHAT RESPONSIVE ========== */
+/* ========== GESTIONNAIRE DE LA BARRE DE CHAT RESPONSIVE - VERSION SIMPLIFIÉE ========== */
 
 class ChatInputManager {
   constructor() {
     this.textarea = null;
     this.inputBox = null;
+    this.sendButton = null;
     this.messagesContainer = null;
     this.minHeight = 40;
     this.maxHeight = 200;
     this.lineHeight = 20;
     this.isInitialized = false;
+    
+    // Éviter les conflits avec les event listeners existants
+    this.preventConflicts = true;
     
     this.init();
   }
@@ -25,6 +29,7 @@ class ChatInputManager {
   setupElements() {
     this.textarea = document.getElementById('message-input');
     this.inputBox = document.querySelector('.input-box');
+    this.sendButton = document.getElementById('send-button');
     this.messagesContainer = document.getElementById('messages');
     
     if (!this.textarea || !this.inputBox) {
@@ -33,30 +38,37 @@ class ChatInputManager {
       return;
     }
 
-    this.setupEventListeners();
+    // Seulement setup les listeners si pas déjà fait par chat.js
+    if (this.preventConflicts) {
+      this.setupCompatibilityMode();
+    } else {
+      this.setupEventListeners();
+    }
+    
     this.isInitialized = true;
     console.log('ChatInputManager initialisé avec succès');
   }
 
+  setupCompatibilityMode() {
+    // Mode compatibilité - ne pas ajouter d'event listeners
+    // Juste fournir les méthodes de redimensionnement
+    console.log('ChatInputManager en mode compatibilité');
+  }
+
   setupEventListeners() {
+    // Ces listeners ne sont ajoutés QUE si chat.js n'est pas présent
+    
     // Événement principal pour le redimensionnement
     this.textarea.addEventListener('input', (e) => {
       this.handleInput(e);
     });
 
-    // Événement pour les touches spéciales
+    // Événement pour les touches spéciales (sans conflit avec chat.js)
     this.textarea.addEventListener('keydown', (e) => {
-      this.handleKeyDown(e);
-    });
-
-    // Événement pour la perte de focus (mobile)
-    this.textarea.addEventListener('blur', () => {
-      this.handleBlur();
-    });
-
-    // Événement pour le focus
-    this.textarea.addEventListener('focus', () => {
-      this.handleFocus();
+      // Seulement gérer le redimensionnement, laisser chat.js gérer l'envoi
+      if (e.key === 'Enter' || e.key === 'Backspace' || e.key === 'Delete') {
+        setTimeout(() => this.resizeTextarea(), 0);
+      }
     });
 
     // Redimensionnement initial
@@ -66,41 +78,9 @@ class ChatInputManager {
   handleInput(event) {
     this.resizeTextarea();
     
-    // Déclencher d'autres événements si nécessaire
-    this.dispatchCustomEvent('chatInputChange', {
-      value: this.textarea.value,
-      height: this.textarea.style.height
-    });
-  }
-
-  handleKeyDown(event) {
-    // Gérer Entrée pour envoyer (si pas Shift+Entrée)
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      this.sendMessage();
-      return;
-    }
-
-    // Gérer Shift+Entrée pour nouvelle ligne
-    if (event.key === 'Enter' && event.shiftKey) {
-      // Laisser le comportement par défaut, puis redimensionner
-      setTimeout(() => this.resizeTextarea(), 0);
-    }
-  }
-
-  handleBlur() {
-    // Sur mobile, éviter le scroll automatique
-    if (this.isMobile()) {
-      window.scrollTo(0, 0);
-    }
-  }
-
-  handleFocus() {
-    // Assurer que l'input est visible
-    if (this.isMobile()) {
-      setTimeout(() => {
-        this.textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 300);
+    // Gérer les suggestions d'agents (@mention) si défini dans chat.js
+    if (typeof window.handleAgentSuggestions === 'function') {
+      window.handleAgentSuggestions(event);
     }
   }
 
@@ -124,9 +104,7 @@ class ChatInputManager {
       newHeight = this.maxHeight;
       this.textarea.classList.add('scrollable');
     } else {
-      // Calculer la hauteur ligne par ligne pour un meilleur contrôle
-      const lines = Math.ceil((scrollHeight - this.minHeight) / this.lineHeight) + 1;
-      newHeight = this.minHeight + (lines - 1) * this.lineHeight;
+      newHeight = Math.max(this.minHeight, scrollHeight);
       this.textarea.classList.remove('scrollable');
     }
     
@@ -140,22 +118,19 @@ class ChatInputManager {
     if (this.textarea.classList.contains('scrollable')) {
       this.textarea.scrollTop = scrollTop;
     }
-
-    // Déclencher l'événement de redimensionnement
-    this.dispatchCustomEvent('chatInputResize', {
-      textareaHeight: newHeight,
-      containerHeight: this.inputBox.style.height
-    });
   }
 
   adjustContainerHeight(textareaHeight) {
-    // Calculer la hauteur du conteneur (textarea + padding)
-    const containerHeight = Math.max(textareaHeight + 20, 60);
-    this.inputBox.style.height = containerHeight + 'px';
+    // Calculer la hauteur du conteneur
+    const containerMinHeight = 60;
+    const padding = 20;
+    const containerHeight = Math.max(textareaHeight + padding, containerMinHeight);
+    
+    // Appliquer la hauteur au conteneur
+    this.inputBox.style.minHeight = containerHeight + 'px';
     
     // Calculer l'offset pour les autres éléments
-    const heightDifference = containerHeight - 60; // 60 est la hauteur minimale
-    document.documentElement.style.setProperty('--chat-height-offset', `${heightDifference}px`);
+    const heightDifference = containerHeight - containerMinHeight;
     
     // Ajuster la zone de messages
     this.adjustMessagesContainer(heightDifference);
@@ -164,12 +139,11 @@ class ChatInputManager {
   adjustMessagesContainer(heightDifference) {
     if (!this.messagesContainer) return;
 
+    const basePadding = 120;
     if (heightDifference > 0) {
-      this.messagesContainer.classList.add('expanded-input');
-      this.messagesContainer.style.paddingBottom = `${120 + heightDifference}px`;
+      this.messagesContainer.style.paddingBottom = `${basePadding + heightDifference}px`;
     } else {
-      this.messagesContainer.classList.remove('expanded-input');
-      this.messagesContainer.style.paddingBottom = '120px';
+      this.messagesContainer.style.paddingBottom = `${basePadding}px`;
     }
   }
 
@@ -178,36 +152,17 @@ class ChatInputManager {
 
     this.textarea.style.height = this.minHeight + 'px';
     this.textarea.classList.remove('scrollable');
-    this.inputBox.style.height = '60px';
-    
-    // Reset des variables CSS
-    document.documentElement.style.setProperty('--chat-height-offset', '0px');
+    this.inputBox.style.minHeight = '60px';
     
     // Reset du conteneur de messages
     if (this.messagesContainer) {
-      this.messagesContainer.classList.remove('expanded-input');
       this.messagesContainer.style.paddingBottom = '120px';
     }
-
-    this.dispatchCustomEvent('chatInputReset');
   }
 
-  sendMessage() {
-    const message = this.textarea.value.trim();
-    if (message.length === 0) return;
-
-    // Déclencher l'événement d'envoi
-    this.dispatchCustomEvent('chatSendMessage', { message });
-
-    // Vider et réinitialiser
-    this.textarea.value = '';
-    this.resetHeight();
-    this.textarea.focus();
-  }
-
+  // Méthodes publiques pour compatibilité
   setValue(value) {
     if (!this.textarea) return;
-    
     this.textarea.value = value;
     this.resizeTextarea();
   }
@@ -222,81 +177,44 @@ class ChatInputManager {
     }
   }
 
-  disable() {
-    if (this.inputBox) {
-      this.inputBox.classList.add('disabled');
-    }
-    if (this.textarea) {
-      this.textarea.disabled = true;
-    }
-  }
-
-  enable() {
-    if (this.inputBox) {
-      this.inputBox.classList.remove('disabled');
-    }
-    if (this.textarea) {
-      this.textarea.disabled = false;
-    }
-  }
-
-  isMobile() {
-    return window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  }
-
-  dispatchCustomEvent(eventName, detail = {}) {
-    const event = new CustomEvent(eventName, {
-      detail,
-      bubbles: true,
-      cancelable: true
-    });
-    
-    if (this.textarea) {
-      this.textarea.dispatchEvent(event);
-    } else {
-      document.dispatchEvent(event);
-    }
-  }
-
-  // Méthode publique pour forcer un redimensionnement
   forceResize() {
     this.resizeTextarea();
   }
-
-  // Méthode pour obtenir les dimensions actuelles
-  getDimensions() {
-    if (!this.textarea || !this.inputBox) return null;
-
-    return {
-      textareaHeight: parseInt(this.textarea.style.height) || this.minHeight,
-      containerHeight: parseInt(this.inputBox.style.height) || 60,
-      isScrollable: this.textarea.classList.contains('scrollable'),
-      heightOffset: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--chat-height-offset')) || 0
-    };
-  }
 }
 
-// Fonction globale pour maintenir la compatibilité avec l'ancien code
+// Fonctions globales pour maintenir la compatibilité avec chat.js
 function resizeTextarea(textarea) {
   if (window.chatInputManager && window.chatInputManager.isInitialized) {
     window.chatInputManager.resizeTextarea();
   }
 }
 
-// Fonction globale pour réinitialiser la hauteur
 function resetChatBarHeight() {
   if (window.chatInputManager && window.chatInputManager.isInitialized) {
     window.chatInputManager.resetHeight();
   }
 }
 
-// Initialiser le gestionnaire quand le script est chargé
+// Fonction pour gérer la suppression de texte
+function handleTextDeletion(textarea) {
+  if (window.chatInputManager && window.chatInputManager.isInitialized) {
+    setTimeout(() => window.chatInputManager.resizeTextarea(), 0);
+  }
+}
+
+// Initialiser le gestionnaire SEULEMENT si chat.js n'est pas encore chargé
 if (typeof window !== 'undefined') {
-  window.chatInputManager = new ChatInputManager();
-  
-  // Exposer les méthodes principales globalement pour compatibilité
-  window.resizeTextarea = resizeTextarea;
-  window.resetChatBarHeight = resetChatBarHeight;
+  // Attendre un peu pour laisser chat.js s'initialiser en premier
+  setTimeout(() => {
+    if (!window.chatInputManager) {
+      window.chatInputManager = new ChatInputManager();
+    }
+    
+    // Exposer les méthodes principales globalement
+    window.resizeTextarea = resizeTextarea;
+    window.resetChatBarHeight = resetChatBarHeight;
+    window.handleTextDeletion = handleTextDeletion;
+  }, 100);
 }
 
 // Export pour utilisation en module (si nécessaire)

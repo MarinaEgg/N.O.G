@@ -44,11 +44,10 @@
     <link rel="manifest" href="/assets/img/site.webmanifest" />
     
     <!-- Charger les scripts dans le bon ordre -->
-    <script src="/assets/js/icons.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/markdown-it@latest/dist/markdown-it.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script src="/assets/js/highlight.min.js"></script>
     <script src="/assets/js/highlightjs-copy.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <!-- Configuration et scripts de base -->
     <script src="/assets/js/config/chat-config.js"></script>
@@ -57,11 +56,8 @@
     <script src="/assets/js/links.js" defer></script>
     <script src="/assets/js/chat.js" defer></script>
     <script src="/assets/js/components/chat-input.js" defer></script>
-    
-    <!-- TEMPORAIREMENT COMMENTÉ POUR ÉVITER LES CONFLITS
     <script src="/assets/js/app.js" defer></script>
     <script src="/assets/js/main.js" defer></script>
-    -->
     
     <!-- CSS -->
     <link
@@ -219,5 +215,13 @@
     <div id="LinksSideNav" class="sidenav">
       <div class="links-side-nav-content"></div>
     </div>
+    
+    <!-- Scripts principaux (avant la fermeture du body) -->
+    <script src="/assets/js/icons.js" defer></script>
+    <script src="/assets/js/links.js" defer></script>
+    <script src="/assets/js/chat.js" defer></script>
+    <script src="/assets/js/components/chat-input.js" defer></script>
+    <script src="/assets/js/app.js" defer></script>
+    <script src="/assets/js/main.js" defer></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-/* ========== GESTIONNAIRE DE LA BARRE DE CHAT RESPONSIVE - VERSION SIMPLIFIÉE ========== */
+/* ========== GESTIONNAIRE DE LA BARRE DE CHAT RESPONSIVE - VERSION CORRÉGÉE ========== */
 
 class ChatInputManager {
   constructor() {
@@ -11,8 +11,8 @@ class ChatInputManager {
     this.lineHeight = 20;
     this.isInitialized = false;
     
-    // Éviter les conflits avec les event listeners existants
-    this.preventConflicts = true;
+    // Mode compatibilité pour éviter les conflits avec chat.js
+    this.compatibilityMode = true;
     
     this.init();
   }
@@ -38,50 +38,10 @@ class ChatInputManager {
       return;
     }
 
-    // Seulement setup les listeners si pas déjà fait par chat.js
-    if (this.preventConflicts) {
-      this.setupCompatibilityMode();
-    } else {
-      this.setupEventListeners();
-    }
-    
+    // En mode compatibilité, on ne setup PAS d'event listeners
+    // On laisse chat.js s'occuper de ça
     this.isInitialized = true;
-    console.log('ChatInputManager initialisé avec succès');
-  }
-
-  setupCompatibilityMode() {
-    // Mode compatibilité - ne pas ajouter d'event listeners
-    // Juste fournir les méthodes de redimensionnement
-    console.log('ChatInputManager en mode compatibilité');
-  }
-
-  setupEventListeners() {
-    // Ces listeners ne sont ajoutés QUE si chat.js n'est pas présent
-    
-    // Événement principal pour le redimensionnement
-    this.textarea.addEventListener('input', (e) => {
-      this.handleInput(e);
-    });
-
-    // Événement pour les touches spéciales (sans conflit avec chat.js)
-    this.textarea.addEventListener('keydown', (e) => {
-      // Seulement gérer le redimensionnement, laisser chat.js gérer l'envoi
-      if (e.key === 'Enter' || e.key === 'Backspace' || e.key === 'Delete') {
-        setTimeout(() => this.resizeTextarea(), 0);
-      }
-    });
-
-    // Redimensionnement initial
-    this.resizeTextarea();
-  }
-
-  handleInput(event) {
-    this.resizeTextarea();
-    
-    // Gérer les suggestions d'agents (@mention) si défini dans chat.js
-    if (typeof window.handleAgentSuggestions === 'function') {
-      window.handleAgentSuggestions(event);
-    }
+    console.log('✅ ChatInputManager initialisé en mode compatibilité');
   }
 
   resizeTextarea() {
@@ -159,27 +119,6 @@ class ChatInputManager {
       this.messagesContainer.style.paddingBottom = '120px';
     }
   }
-
-  // Méthodes publiques pour compatibilité
-  setValue(value) {
-    if (!this.textarea) return;
-    this.textarea.value = value;
-    this.resizeTextarea();
-  }
-
-  getValue() {
-    return this.textarea ? this.textarea.value : '';
-  }
-
-  focus() {
-    if (this.textarea) {
-      this.textarea.focus();
-    }
-  }
-
-  forceResize() {
-    this.resizeTextarea();
-  }
 }
 
 // Fonctions globales pour maintenir la compatibilité avec chat.js
@@ -202,19 +141,17 @@ function handleTextDeletion(textarea) {
   }
 }
 
-// Initialiser le gestionnaire SEULEMENT si chat.js n'est pas encore chargé
+// Initialiser le gestionnaire automatiquement
 if (typeof window !== 'undefined') {
-  // Attendre un peu pour laisser chat.js s'initialiser en premier
-  setTimeout(() => {
-    if (!window.chatInputManager) {
-      window.chatInputManager = new ChatInputManager();
-    }
-    
-    // Exposer les méthodes principales globalement
-    window.resizeTextarea = resizeTextarea;
-    window.resetChatBarHeight = resetChatBarHeight;
-    window.handleTextDeletion = handleTextDeletion;
-  }, 100);
+  // Pas de délai - initialiser immédiatement
+  if (!window.chatInputManager) {
+    window.chatInputManager = new ChatInputManager();
+  }
+  
+  // Exposer les méthodes principales globalement
+  window.resizeTextarea = resizeTextarea;
+  window.resetChatBarHeight = resetChatBarHeight;
+  window.handleTextDeletion = handleTextDeletion;
 }
 
 // Export pour utilisation en module (si nécessaire)
